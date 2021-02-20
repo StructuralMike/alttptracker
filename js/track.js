@@ -182,7 +182,18 @@
 						var entrancetype = '';
 						if (entrances[k].is_available()) {
 							if (entrances[k].known_location != '') {
-								entrancetype = isDungeon(entrances[k].known_location) ? 'dungeon' : 'keylocation';
+								if (isDungeon(entrances[k].known_location) === true) {
+									entrancetype = 'dungeon';
+								} else if (isDark(entrances[k].known_location) === true) {
+									entrancetype = 'dark';
+								} else if (requireItem(entrances[k].known_location) === true) {
+									entrancetype = 'itemlocked';
+								} else if (isUnknownConnector(entrances[k].known_location) === true) {
+									entrancetype = 'unknownconnector';
+								}
+								else {
+									entrancetype = 'other';
+								}
 							} else if (entrances[k].is_connector) {
 								entrancetype = 'connector';
 							}
@@ -381,7 +392,15 @@
 						var entrancetype = '';
 						if (entrances[k].is_available()) {
 							if (entrances[k].known_location != '') {
-								entrancetype = isDungeon(entrances[k].known_location) ? 'dungeon' : 'keylocation';
+								if (isDungeon(entrances[k].known_location) === true) {
+									entrancetype = 'dungeon';
+								} else if (isDark(entrances[k].known_location) === true) {
+									entrancetype = 'dark';
+								} else if (requireItem(entrances[k].known_location) === true) {
+									entrancetype = 'itemlocked';
+								} else {
+									entrancetype = 'other';
+								}
 							} else if (entrances[k].is_connector) {
 								entrancetype = 'connector';
 							}
@@ -939,8 +958,6 @@
 					divtoadd.style.width = Math.abs(connector1.offsetLeft - connector2.offsetLeft);
 					divtoadd.style.height = Math.abs(connector1.offsetTop - connector2.offsetTop);
 					divtoadd.style.position = 'absolute';
-					divtoadd.style.zIndex = 500;
-					
 					document.getElementById('connectorLineDiv').appendChild(divtoadd);
 					connectorid++;
 				}
@@ -1187,10 +1204,47 @@
 				return true;
 				break;
 		}
-		
 		return false;
 	}
-	
+
+	window.isDark = function(x) {
+		switch (x) {
+			case 'dark':
+				return true;
+				break;
+			}
+		return false;
+	}
+
+	window.requireItem = function(x) {
+		switch (x) {
+			case 'magic':
+			case 'kid':
+			case 'smith':
+			case 'bat':
+			case 'library':
+			case 'sahas':
+			case 'mimic':
+			case 'dam':
+			case 'bomb':
+			case 'bumper':
+			case 'spike':
+			case 'hook':
+				return true
+				break;
+			}
+		return false;
+	}
+
+	window.isUnknownConnector = function(x) {
+		switch (x) {
+			case 'connector':
+				return true
+				break;
+		}
+		return false;
+	}	
+
 	window.findItems = function(items) {
 		if(/*spoilerLoaded && */flags.mapmode != "N")
 		{
