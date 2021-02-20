@@ -902,16 +902,24 @@
 					divtoadd.id = 'connectordiv' + connectorid;
 					var connector1 = document.getElementById('entranceMap' + x);
 					var connector2 = document.getElementById('entranceMap' + document.getElementById('entranceID').value);
-					
-					if (connector1.offsetTop > connector2.offsetTop) {
-						divtoadd.style.top = connector2.offsetTop + 6;
+
+					if (flags.mapmode === "C") {
+						var connectorOffset = 4.5;
 					} else {
-						divtoadd.style.top = connector1.offsetTop + 6;
+						var connectorOffset = 6;
 					}
-					if (connector1.offsetLeft > connector2.offsetLeft) {
-						divtoadd.style.left = connector2.offsetLeft + 6;
+
+					// If C1 is higher up on the screen than C2
+					if (connector1.offsetTop > connector2.offsetTop) {
+						divtoadd.style.top = connector2.offsetTop + connectorOffset;
 					} else {
-						divtoadd.style.left = connector1.offsetLeft + 6;
+						divtoadd.style.top = connector1.offsetTop + connectorOffset;
+					}
+					// If C1 is further to the left on the screen than C2
+					if (connector1.offsetLeft > connector2.offsetLeft) {
+						divtoadd.style.left = connector2.offsetLeft + connectorOffset;
+					} else {
+						divtoadd.style.left = connector1.offsetLeft + connectorOffset;
 					}
 					
 					if (connector1.offsetLeft > connector2.offsetLeft) {
@@ -931,6 +939,7 @@
 					divtoadd.style.width = Math.abs(connector1.offsetLeft - connector2.offsetLeft);
 					divtoadd.style.height = Math.abs(connector1.offsetTop - connector2.offsetTop);
 					divtoadd.style.position = 'absolute';
+					divtoadd.style.zIndex = 500;
 					
 					document.getElementById('connectorLineDiv').appendChild(divtoadd);
 					connectorid++;
@@ -2375,6 +2384,7 @@
 					modalTags.innerHTML = compactMapMenu();
 				}				
 			}
+
         } else {
             document.getElementById('app').classList.add('mapless');
             document.getElementById('map').style.display = 'none';
