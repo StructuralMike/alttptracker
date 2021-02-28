@@ -147,7 +147,7 @@
 				if (label != 'bomb') {
 					nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 				} else {
-					if (standardbombs) {
+					if (standardbombs || flags.futuroyes) {
 						//Because you always have bombs...except in Standard
 						nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 					}
@@ -2041,7 +2041,7 @@
 			
 			var fParam = currentURL.substr(currentURL.indexOf("f=") + 2, 27);
 			
-			var replaceParam = flags.gametype + document.getElementById('entranceselect').value + flags.bossshuffle + flags.enemyshuffle + flags.glitches + flags.itemplacement + flags.goals + flags.opentower + flags.opentowercount + flags.ganonvuln + flags.ganonvulncount + flags.swordmode + flags.mapmode + flags.spoilermode + flags.spheresmode + 'Y' + 'N' + (flags.wildmaps ? '1' : '0') + (flags.wildcompasses ? '1' : '0') + (flags.wildkeys ? '1' : '0') + (flags.wildbigkeys ? '1' : '0') + flags.ambrosia + flags.autotracking + flags.trackingport;
+			var replaceParam = flags.gametype + document.getElementById('entranceselect').value + flags.bossshuffle + flags.enemyshuffle + flags.glitches + flags.itemplacement + flags.goals + flags.opentower + flags.opentowercount + flags.ganonvuln + flags.ganonvulncount + flags.swordmode + flags.mapmode + flags.spoilermode + flags.spheresmode + 'Y' + 'N' + (flags.wildmaps ? '1' : '0') + (flags.wildcompasses ? '1' : '0') + (flags.wildkeys ? '1' : '0') + (flags.wildbigkeys ? '1' : '0') + flags.ambrosia + flags.futuro + flags.autotracking + flags.trackingport;
 
 			currentURL = currentURL.replace(fParam, replaceParam);
 			
@@ -2586,7 +2586,7 @@
 			window.addEventListener("message", receiveMessage, false);
 		
 		standardbombs = true;
-		if (flags.gametype != 'S') {
+		if (flags.gametype != 'S' && flags.futurono) {
 			toggle('bomb');
 			standardbombs = false;
 		}

@@ -2,12 +2,12 @@
     'use strict';
 
     function medallionCheck(i) {
-        if ((items.sword === 0 && flags.swordmode != 'S') || !items.bombos && !items.ether && !items.quake) return 'unavailable';
-        if (medallions[i] === 1 && !items.bombos ||
-            medallions[i] === 2 && !items.ether ||
-            medallions[i] === 3 && !items.quake) return 'unavailable';
-		if (items.bombos && items.ether && items.quake) return 'available';
-        if (medallions[i] === 0 && !(items.bombos && items.ether && items.quake)) return 'possible';
+        if ((items.sword === 0 && flags.swordmode != 'S') || !canUse('bombos') && !canUse('ether') && !canUse('quake')) return 'unavailable';
+        if (medallions[i] === 1 && !canUse('bombos') ||
+            medallions[i] === 2 && !canUse('ether') ||
+            medallions[i] === 3 && !canUse('quake')) return 'unavailable';
+		if (canUse('bombos') && canUse('ether') && canUse('quake')) return 'available';
+        if (medallions[i] === 0 && !(canUse('bombos') && canUse('ether') && canUse('quake'))) return 'possible';
 		return 'available';
     }
 	
@@ -21,12 +21,14 @@
 		return crystal_count;
 	}
 
+	function canUse(x) { return (flags.futurono || (items.magic && items[x])); }	
     function melee() { return items.sword || items.hammer; }
     function melee_bow() { return melee() || items.bow > 0; }
-    function cane() { return items.somaria || items.byrna; }
-    function rod() { return items.firerod || items.icerod; }
-	function agatowerweapon() { return items.sword > 0 || items.somaria || items.bow > 0 || items.hammer || items.firerod; }
-
+    function cane() { return canUse('somaria') || canUse('byrna'); }
+    function rod() { return canUse('firerod') || canUse('icerod'); }
+	function agatowerweapon() { return items.sword > 0 || canUse('somaria') || items.bow > 0 || items.hammer || canUse('firerod'); }
+	function canHitSwitch() { return (melee_bow() || cane() || rod() || items.boomerang || items.hookshot || items.bomb); }
+	
     function always() { return 'available'; }
 
 	function enemizerCheck(i) {
@@ -35,7 +37,7 @@
 				return 'possible';
 				break;
 			case 1:
-				if (items.sword > 0 || items.hammer || items.bow > 0 || items.boomerang > 0 || items.byrna || items.somaria || items.icerod || items.firerod) return 'available';
+				if (items.sword > 0 || items.hammer || items.bow > 0 || items.boomerang > 0 || canUse('byrna') || canUse('somaria') || canUse('icerod') || canUse('firerod')) return 'available';
 				break;
 			case 2:
 				if (melee_bow() || cane() || rod() || items.hammer) return 'available';
@@ -50,19 +52,19 @@
 				if (items.hookshot && (items.sword > 0 || items.hammer)) return 'available';
 				break;
 			case 6:
-				if (items.sword > 0 || items.hammer || items.firerod || items.byrna || items.somaria) return 'available';
+				if (items.sword > 0 || items.hammer || canUse('firerod') || canUse('byrna') || canUse('somaria')) return 'available';
 				break;
 			case 7:
-				if (items.sword > 0 || items.hammer || items.somaria || items.byrna) return 'available';
+				if (items.sword > 0 || items.hammer || canUse('somaria') || canUse('byrna')) return 'available';
 				break;
 			case 8:
-				if (items.firerod || (items.bombos && (items.sword > 0 || items.hammer))) return 'available';
+				if (canUse('firerod') || (canUse('bombos') && (items.sword > 0 || items.hammer))) return 'available';
 				break;
 			case 9:
 				if (melee_bow() || items.hammer) return 'available';
 				break;
 			case 10:
-				if (items.firerod && items.icerod && (items.hammer || items.sword > 0)) return 'available';
+				if (canUse('firerod') && canUse('icerod') && (items.hammer || items.sword > 0)) return 'available';
 				break;
 				
 		}
@@ -1330,7 +1332,7 @@
 			is_connector: false,
 			is_available: function() {
 				if (hasFoundEntrance(96)) return 'available';
-				return items.firerod && (hasFoundEntrance(97) || canReachInvertedNorthDW()) ? 'available' : 'unavailable';
+				return canUse('firerod') && (hasFoundEntrance(97) || canReachInvertedNorthDW()) ? 'available' : 'unavailable';
 			}
 		}, { // [97]
 			caption: 'Skull Woods - West Entrance',
@@ -1849,11 +1851,11 @@
 			caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
 			is_beaten: false,
 			is_beatable: function() {
-				if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				if (!items.flippers || (!canUse('firerod') && !canUse('bombos')) || (!canUse('firerod') && canUse('bombos') && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 				return window.IPBoss();
 			},
 			can_get_chest: function() {
-				if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				if (!items.flippers || (!canUse('firerod') && !canUse('bombos')) || (!canUse('firerod') && canUse('bombos') && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 				return window.IPChests();
 			}
 		}, { // [8]
@@ -1878,7 +1880,7 @@
 			caption: 'Turtle Rock {medallion0}/{mirror}',
 			is_beaten: false,
 			is_beatable: function() {
-				if (!(items.glove || activeFluteInvertedEntrance()) || !items.somaria) return 'unavailable';
+				if (!(items.glove || activeFluteInvertedEntrance()) || !canUse('somaria')) return 'unavailable';
 				//First, check for back door access through mirror, it has logic priority
 				if (items.mirror && ((items.hookshot && items.moonpearl) || (items.glove === 2))) {
 					return window.TRBackBoss();
@@ -1897,7 +1899,7 @@
 					return window.TRBackChests();
 				//If not, go through normal front door access
 				} else {
-					if (!items.somaria) return 'unavailable';
+					if (!canUse('somaria')) return 'unavailable';
 					var state = medallionCheck(1);
 					if (state) return state;
 					return window.TRFrontChests();
@@ -1908,7 +1910,7 @@
 			is_beaten: false,
 			is_beatable: function() {
 				if (crystalCheck() < flags.ganonvulncount || !canReachLightWorld()) return 'unavailable';
-				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (items.lantern || items.firerod)) return 'available';
+				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (canUse('lantern') || canUse('firerod'))) return 'available';
 				return window.GTBoss();			
 			},
 			can_get_chest: function() {
@@ -3602,11 +3604,11 @@
 			caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
 			is_beaten: false,
 			is_beatable: function() {
-				if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				if (!items.flippers || (!canUse('firerod') && !canUse('bombos')) || (!canUse('firerod') && canUse('bombos') && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 				return window.IPBoss();
 			},
 			can_get_chest: function() {
-				if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				if (!items.flippers || (!canUse('firerod') && !canUse('bombos')) || (!canUse('firerod') && canUse('bombos') && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 				return window.IPChests();
 			}
 		}, { // [8]
@@ -3631,7 +3633,7 @@
 			caption: 'Turtle Rock {medallion0}/{mirror}',
 			is_beaten: false,
 			is_beatable: function() {
-				if (!(items.glove || activeFlute()) || !items.somaria) return 'unavailable';
+				if (!(items.glove || activeFlute()) || !canUse('somaria')) return 'unavailable';
 				//First, check for back door access through mirror, it has logic priority
 				if (items.mirror && ((items.hookshot && items.moonpearl) || (items.glove === 2))) {
 					return window.TRBackBoss();
@@ -3650,7 +3652,7 @@
 					return window.TRBackChests();
 				//If not, go through normal front door access
 				} else {
-					if (!items.somaria) return 'unavailable';
+					if (!canUse('somaria')) return 'unavailable';
 					var state = medallionCheck(1);
 					if (state) return state;
 					return window.TRFrontChests();
@@ -3661,7 +3663,7 @@
 			is_beaten: false,
 			is_beatable: function() {
 				if (crystalCheck() < flags.ganonvulncount || !canReachLightWorld()) return 'unavailable';
-				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (items.lantern || items.firerod)) return 'available';
+				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (canUse('lantern') || canUse('firerod'))) return 'available';
 				return window.GTBoss();			
 			},
 			can_get_chest: function() {
@@ -3830,7 +3832,7 @@
 			is_opened: false,
 			is_available: function() {
 				return 'available';
-				return items.glove && items.cape && items.mirror && canReachLightWorld() ? 'available' : 'information';
+				return items.glove && canUse('cape') && items.mirror && canReachLightWorld() ? 'available' : 'information';
 			}
 		}, { // [18]
 			caption: 'Pyramid',
@@ -3939,13 +3941,13 @@
 				return (items.flippers ? 'available' : 'unavailable');
 			}
 		}, { // [6]
-			caption: 'Fairy Spring',
+			caption: 'Fairy Spring {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
-				return 'available';
+				return (items.bomb ? 'available' : 'unavailable');
 			}
 		}, { // [7]
 			caption: 'Hyrule Castle - Main Entrance',
@@ -3984,7 +3986,7 @@
 			is_connector: false,
 			is_available: function() {
 				if (hasFoundEntrance(10)) return 'available';
-				return canReachHCNorth() && (items.sword > 1 || items.cape || items.agahnim || (flags.swordmode === 'S' && items.hammer)) ? 'available' : 'unavailable';
+				return canReachHCNorth() && (items.sword > 1 || canUse('cape') || items.agahnim || (flags.swordmode === 'S' && items.hammer)) ? 'available' : 'unavailable';
 			}
 		}, { // [11]
 			caption: 'Hyrule Castle - Secret Entrance Stairs',
@@ -4237,13 +4239,13 @@
 				return 'available';
 			}
 		}, { // [38]
-			caption: 'Bomb Hut',
+			caption: 'Bomb Hut {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
-				return 'available';
+				return (items.bomb ? 'available' : 'unavailable');
 			}
 		}, { // [39]
 			caption: 'Shop',
@@ -4469,13 +4471,13 @@
 				return 'available';
 			}
 		}, { // [63]
-			caption: 'Mini Moldorm Cave',
+			caption: 'Mini Moldorm Cave {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
-				return 'available';
+				return (items.bomb ? 'available' : 'unavailable');
 			}
 		}, { // [64]
 			caption: 'Pond of Happiness',
@@ -4489,13 +4491,13 @@
 				return (items.flippers) ? 'available' : 'unavailable';
 			}
 		}, { // [65]
-			caption: 'Ice Rod Cave',
+			caption: 'Ice Rod Cave {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
-				return 'available';
+				return (items.bomb ? 'available' : 'unavailable');
 			}
 		}, { // [66]
 			caption: 'Good Bee Cave',
@@ -4717,14 +4719,14 @@
 				return (canReachDarkWorldSouth() && items.boots && items.moonpearl) ? 'available' : 'unavailable';
 			}
 		}, { // [88]
-			caption: 'Hype Cave',
+			caption: 'Hype Cave {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
 				if (hasFoundEntrance(88)) return 'available';
-				return (canReachDarkWorldSouth() && items.moonpearl) ? 'available' : 'unavailable';
+				return (canReachDarkWorldSouth() && items.moonpearl && items.bomb) ? 'available' : 'unavailable';
 			}
 		}, { // [89]
 			caption: 'Swamp Palace',
@@ -4815,7 +4817,7 @@
 			is_connector: false,
 			is_available: function() {
 				if (hasFoundEntrance(96)) return 'available';
-				return (canReachOutcast() && items.moonpearl && items.firerod) ? 'available' : 'unavailable';
+				return (canReachOutcast() && items.moonpearl && canUse('firerod')) ? 'available' : 'unavailable';
 			}
 		}, { // [97]
 			caption: 'Skull Woods - West Entrance',
@@ -4947,14 +4949,14 @@
 				return (canReachOutcast() && items.moonpearl && items.hammer) ? 'available' : 'unavailable';
 			}
 		}, { // [111]
-			caption: 'Bombable Hut',
+			caption: 'Bombable Hut {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
 				if (hasFoundEntrance(111)) return 'available';
-				return (canReachOutcast() && items.moonpearl) ? 'available' : 'unavailable';
+				return (canReachOutcast() && items.moonpearl && items.bomb) ? 'available' : 'unavailable';
 			}
 		}, { // [112]
 			caption: 'Hammer Peg Cave',
@@ -5039,14 +5041,14 @@
 				return (canReachDarkWorldSouth()) ? 'available' : 'unavailable';
 			}
 		}, { // [120]
-			caption: 'Ledge Fairy',
+			caption: 'Ledge Fairy {bomb}',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
 				if (hasFoundEntrance(120)) return 'available';
-				return (canReachDarkWorldSouthEast() && items.moonpearl) ? 'available' : 'unavailable';
+				return (canReachDarkWorldSouthEast() && items.moonpearl && items.bomb) ? 'available' : 'unavailable';
 			}
 		}, { // [121]
 			caption: 'Ledge Hint',
@@ -5333,12 +5335,12 @@
 			is_beaten: false,
 			is_beatable: function() {
 				if (!items.moonpearl || !items.flippers || items.glove !== 2 || !canReachDarkWorld()) return 'unavailable';
-				if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				if (!canUse('firerod') && (!canUse('bombos') || canUse('bombos') && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 				return window.IPBoss();
 			},
 			can_get_chest: function() {
 				if (!items.moonpearl || !items.flippers || items.glove !== 2 || !canReachDarkWorld()) return 'unavailable';
-				if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				if (!canUse('firerod') && (!canUse('bombos') || canUse('bombos') && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 				return window.IPChests();
 			}
 		}, { // [8]
@@ -5363,7 +5365,7 @@
 			caption: 'Turtle Rock {medallion0} {hammer} {somaria}',
 			is_beaten: false,
 			is_beatable: function() {
-				if (!items.moonpearl || !items.hammer || items.glove !== 2 || !items.somaria || !canReachDarkWorld()) return 'unavailable';
+				if (!items.moonpearl || !items.hammer || items.glove !== 2 || !canUse('somaria') || !canReachDarkWorld()) return 'unavailable';
 				if (!items.hookshot && !items.mirror) return 'unavailable';
 				if (!items.bigkey9) return 'unavailable';
 				var state = medallionCheck(1);
@@ -5371,9 +5373,9 @@
 				return window.TRFrontBoss();
 			},
 			can_get_chest: function() {
-				if (!items.moonpearl || !items.hammer || items.glove !== 2 || !items.somaria || !canReachDarkWorld()) return 'unavailable';
+				if (!items.moonpearl || !items.hammer || items.glove !== 2 || !canUse('somaria') || !canReachDarkWorld()) return 'unavailable';
 				if (!items.hookshot && !items.mirror) return 'unavailable';
-				if (!items.somaria) return 'unavailable';
+				if (!canUse('somaria')) return 'unavailable';
 				var state = medallionCheck(1);
 				if (state) return state;				
 				return window.TRFrontChests();
@@ -5384,7 +5386,7 @@
 			is_beatable: function() {
 				if (crystalCheck() < flags.ganonvulncount || !canReachDarkWorld()) return 'unavailable';
 				//Fast Ganon
-				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (items.lantern || items.firerod)) return 'available';
+				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (canUse('lantern') || canUse('firerod'))) return 'available';
 				return window.GTBoss();
 			},
 			can_get_chest: function() {

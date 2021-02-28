@@ -59,6 +59,7 @@ function launch_tracker() {
 	var shuffledsmallkeys = (document.getElementById("shuffledsmallkeys").checked === true ? "1" : "0");
 	var shuffledbigkeys = (document.getElementById("shuffledbigkeys").checked === true ? "1" : "0");
 	var ambrosia = document.querySelector('input[name="ambrosiagroup"]:checked').value;
+	var futuro = document.querySelector('input[name="futurogroup"]:checked').value;
 	var startingboots = document.querySelector('input[name="startingbootsgroup"]:checked').value;
 	var trackingport = document.getElementById('autotrackingport').value;
 	
@@ -79,7 +80,7 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('{tracker}.html?f={type}{entrance}{boss}{enemy}{glitches}{item}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{map}{spoiler}{sphere}{mystery}{door}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{ambrosia}{autotracking}{trackingport}&sprite={sprite}{compact}&starting={startingboots}'
+	var trackerWindow = window.open('{tracker}.html?f={type}{entrance}{boss}{enemy}{glitches}{item}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{map}{spoiler}{sphere}{mystery}{door}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{ambrosia}{futuro}{autotracking}{trackingport}&sprite={sprite}{compact}&starting={startingboots}'
 			.replace('{tracker}', trackerName)
 			.replace('{type}', type)
 			.replace('{entrance}', entrance)
@@ -105,6 +106,7 @@ function launch_tracker() {
 			.replace('{shuffledsmallkeys}', shuffledsmallkeys)
 			.replace('{shuffledbigkeys}', shuffledbigkeys)
 			.replace('{ambrosia}', ambrosia)
+			.replace('{futuro}', futuro)
 			.replace('{autotracking}', autotracking)
 			.replace('{trackingport}', trackingport)
 			.replace('{startingboots}', startingboots)
@@ -130,6 +132,7 @@ function loadopenpreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -154,6 +157,7 @@ function loadopenbootspreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -178,6 +182,7 @@ function loadambrosiapreset() {
 	document.getElementById("swordsassured").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiayes").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -202,6 +207,7 @@ function loadmysterypreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryyes").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = true;
 	document.getElementById("shuffledcompasses").checked = true;
 	document.getElementById("shuffledsmallkeys").checked = true;
@@ -226,6 +232,7 @@ function loadcrosskeyspreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = true;
 	document.getElementById("shuffledcompasses").checked = true;
 	document.getElementById("shuffledsmallkeys").checked = true;
@@ -249,7 +256,7 @@ function loadinvertedkeyspreset() {
 	document.getElementById("ganonselect").value = 7;
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
-	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = true;
 	document.getElementById("shuffledcompasses").checked = true;
 	document.getElementById("shuffledsmallkeys").checked = true;
@@ -274,6 +281,7 @@ function loadenemizerpreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -297,7 +305,7 @@ function loadbootspreset() {
 	document.getElementById("ganonselect").value = 7;
 	document.getElementById("swordsassured").checked = true;
 	document.getElementById("mysteryno").checked = true;
-	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -322,6 +330,7 @@ function loadopenkeyspreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = true;
 	document.getElementById("shuffledcompasses").checked = true;
 	document.getElementById("shuffledsmallkeys").checked = true;
@@ -346,6 +355,7 @@ function loadadkeyspreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = true;
 	document.getElementById("shuffledcompasses").checked = true;
 	document.getElementById("shuffledsmallkeys").checked = true;
@@ -370,6 +380,7 @@ function loadreducedpreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -394,6 +405,7 @@ function loadinvrosiapreset() {
 	document.getElementById("swordsassured").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiayes").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
@@ -419,6 +431,7 @@ function loadstandardpreset() {
 	document.getElementById("swordsrandomized").checked = true;
 	document.getElementById("mysteryno").checked = true;
 	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("futurono").checked = true;
 	document.getElementById("shuffledmaps").checked = false;
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;

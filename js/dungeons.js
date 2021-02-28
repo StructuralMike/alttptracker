@@ -1,32 +1,33 @@
 (function(window) {
     'use strict';
 
+	function canUse(x) { return (flags.futurono || (items.magic && items[x])); }
 	function melee() { return items.sword || items.hammer; }
     function melee_bow() { return melee() || items.bow > 0; }
-    function cane() { return items.somaria || items.byrna; }
-    function rod() { return items.firerod || items.icerod; }
+    function cane() { return canUse('somaria') || canUse('byrna'); }
+    function rod() { return canUse('firerod') || canUse('icerod'); }
 
     function medallion_check(i) {
-        if ((items.sword === 0 && flags.swordmode != 'S') || !items.bombos && !items.ether && !items.quake) return 'unavailable';
-        if (medallions[i] === 1 && !items.bombos ||
-            medallions[i] === 2 && !items.ether ||
-            medallions[i] === 3 && !items.quake) return 'unavailable';
-		if (items.bombos && items.ether && items.quake) return 'available';
-        if (medallions[i] === 0 && !(items.bombos && items.ether && items.quake)) return 'possible';
+        if ((items.sword === 0 && flags.swordmode != 'S') || !canUse('bombos') && !canUse('ether') && !canUse('quake')) return 'unavailable';
+        if (medallions[i] === 1 && !canUse('bombos') ||
+            medallions[i] === 2 && !canUse('ether') ||
+            medallions[i] === 3 && !canUse('quake')) return 'unavailable';
+		if (canUse('bombos') && canUse('ether') && canUse('quake')) return 'available';
+        if (medallions[i] === 0 && !(canUse('bombos') && canUse('ether') && canUse('quake'))) return 'possible';
 		return 'available';
     }
 
 	//Check which boss is at the end of the dungeon
 	function enemizer_check(i) {
 		//All possible required items to kill a boss
-		if (melee() && items.hookshot && items.icerod && items.firerod) return 'available';
+		if (melee() && items.hookshot && canUse('icerod') && canUse('firerod')) return 'available';
 		if (!melee_bow() && !rod() && !cane() && items.boomerang === 0) return 'unavailable';
 		switch (enemizer[i]) {
 			case 0:
 				return (flags.bossshuffle != 'N' ? 'possible' : 'available');
 				break;
 			case 1:
-				if (items.sword > 0 || items.hammer || items.bow > 0 || items.boomerang > 0 || items.byrna || items.somaria || items.icerod || items.firerod) return 'available';
+				if (items.sword > 0 || items.hammer || items.bow > 0 || items.boomerang > 0 || canUse('byrna') || canUse('somaria') || canUse('icerod') || canUse('firerod')) return 'available';
 				break;
 			case 2:
 				if (melee_bow() || cane() || rod() || items.hammer) return 'available';
@@ -41,19 +42,19 @@
 				if (items.hookshot && (items.sword > 0 || items.hammer)) return 'available';
 				break;
 			case 6:
-				if (items.sword > 0 || items.hammer || items.firerod || items.byrna || items.somaria) return 'available';
+				if (items.sword > 0 || items.hammer || canUse('firerod') || canUse('byrna') || canUse('somaria')) return 'available';
 				break;
 			case 7:
-				if (items.sword > 0 || items.hammer || items.somaria || items.byrna) return 'available';
+				if (items.sword > 0 || items.hammer || canUse('somaria') || canUse('byrna')) return 'available';
 				break;
 			case 8:
-				if (items.firerod || (items.bombos && (items.sword > 0 || (flags.swordmode === 'S' && items.hammer)))) return 'available';
+				if (canUse('firerod') || (canUse('bombos') && (items.sword > 0 || (flags.swordmode === 'S' && items.hammer)))) return 'available';
 				break;
 			case 9:
 				if (melee_bow() || items.hammer) return 'available';
 				break;
 			case 10:
-				if (items.firerod && items.icerod && (items.hammer || items.sword > 0)) return 'available';
+				if (canUse('firerod') && canUse('icerod') && (items.hammer || items.sword > 0)) return 'available';
 				break;
 				
 		}
@@ -267,7 +268,7 @@
 					case '':
 						break;
 					case 'firesource':
-						if(!items.lantern && !items.firerod)
+						if(!canUse('lantern') && !canUse('firerod'))
 						{
 							doorcheck = 'possible';
 							break label;
@@ -288,7 +289,7 @@
 						}
 						break;
 					case 'freezor':
-						if(!items.firerod && (!items.bombos || (items.sword === 0 && flags.swordmode != 'S')))
+						if(!canUse('firerod') && (!canUse('bombos') || (items.sword === 0 && flags.swordmode != 'S')))
 						{
 							doorcheck = 'possible';
 							break label;
@@ -302,7 +303,7 @@
 						}
 						break;
 					case 'laserbridge':
-						if(!items.cape && !items.byrna && items.shield < 3)
+						if(!canUse('cape') && !canUse('byrna') && items.shield < 3)
 						{
 							doorcheck = 'possible';
 							break label;
@@ -333,7 +334,7 @@
 		}
 		if(onlyDarkPossible)
 			doorcheck = 'dark'+doorcheck;
-		if(doorcheck === 'available' && !onlyDarkPossible && !items.lantern && (darkRoom || (torchDarkRoom/* && (!items.firerod || flags.itemplacement === 'B')*/)))//Advanced placement in the future?
+		if(doorcheck === 'available' && !onlyDarkPossible && !items.lantern && (darkRoom || (torchDarkRoom/* && (!canUse('firerod') || flags.itemplacement === 'B')*/)))//Advanced placement in the future?
 			doorcheck = 'darkavailable';//Could require light source
 		return doorcheck;
 	};
@@ -346,10 +347,10 @@
 		//Dark Room check
 		if (!items.lantern) {
 			if (flags.wildbigkeys) {
-				if (items.firerod) return dungeoncheck;
+				if (canUse('firerod')) return dungeoncheck;
 				return dungeoncheck === 'possible' ? 'darkpossible' : 'darkavailable';
 			} else {
-				if (items.firerod) return 'possible';
+				if (canUse('firerod')) return 'possible';
 				return dungeoncheck === 'possible' ? 'darkpossible' : 'darkavailable';
 			}
 		}
@@ -358,7 +359,7 @@
 
     window.DPBoss = function() {
 		var dungeoncheck = enemizer_check(1);
-		if (!items.bigkey1 || dungeoncheck === 'unavailable' || (items.glove === 0 && flags.glitches === 'N') || (!items.firerod && !items.lantern)) return 'unavailable';
+		if (!items.bigkey1 || dungeoncheck === 'unavailable' || (items.glove === 0 && flags.glitches === 'N') || (!canUse('firerod') && !items.lantern)) return 'unavailable';
 		if (flags.wildkeys && !flags.wildbigkeys && (items.smallkey1 === 0 && flags.gametype != 'R') && !items.boots) return 'possible';
 		if (!flags.wildkeys && !flags.wildbigkeys && !items.boots) return 'possible';
 		return dungeoncheck;
@@ -368,7 +369,7 @@
 		var dungeoncheck = enemizer_check(2);
 		if (!items.bigkey2 || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildbigkeys) return (dungeoncheck === 'available' ? ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available') : ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible')); 
-		if ((flags.wildkeys && (items.smallkey2 === 0 && flags.gametype != 'R')) || (!items.lantern && !items.firerod)) return (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible';
+		if ((flags.wildkeys && (items.smallkey2 === 0 && flags.gametype != 'R')) || (!canUse('lantern') && !canUse('firerod'))) return (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible';
 		return (dungeoncheck === 'available' ? ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available') : ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible'));
     };
 
@@ -396,24 +397,28 @@
 
     window.SWBoss = function() {
 		var dungeoncheck = enemizer_check(5);
-		if (!items.firerod || (items.sword === 0 && flags.swordmode != 'S')) return 'unavailable';
+		if (!canUse('firerod') || (items.sword === 0 && flags.swordmode != 'S')) return 'unavailable';
 		return dungeoncheck;
 	};
 
     window.TTBoss = function() {
-		var dungeoncheck = enemizer_check(6);
-		return (items.bigkey6 ? dungeoncheck : 'unavailable');
+		if (!items.bomb) {
+			return 'unavailable';
+		} else {
+			var dungeoncheck = enemizer_check(6);
+			return (items.bigkey6 ? dungeoncheck : 'unavailable');
+		}
     };
 
     window.IPBoss = function() {
-		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+		if (!canUse('firerod') && (!canUse('bombos') || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 		var dungeoncheck = enemizer_check(7);
 		if (!items.hammer || items.glove === 0 || dungeoncheck == 'unavailable') return 'unavailable';
 		if (flags.wildbigkeys) {
-			if (!items.bigkey7 && !items.somaria && !items.hookshot) return 'unavailable';
-			if (!items.hookshot && items.somaria && !items.bigkey7) return 'possible';
+			if (!items.bigkey7 && !canUse('somaria') && !items.hookshot) return 'unavailable';
+			if (!items.hookshot && canUse('somaria') && !items.bigkey7) return 'possible';
 		} else {
-			if (!items.hookshot && !items.somaria) return 'possible';
+			if (!items.hookshot && !canUse('somaria')) return 'possible';
 		}
 		
 		return dungeoncheck;
@@ -423,12 +428,12 @@
 		if (!items.boots && !items.hookshot) return 'unavailable';
 		if (medallion_check(0) === 'unavailable') return 'unavailable';
 		var dungeoncheck = enemizer_check(8);
-		if (!items.bigkey8 || !items.somaria || dungeoncheck === 'unavailable') return 'unavailable';
+		if (!items.bigkey8 || !canUse('somaria') || !items.bomb || dungeoncheck === 'unavailable') return 'unavailable';
 		if (dungeoncheck === 'possible' || medallion_check(0) === 'possible') {
 			return (items.lantern ? 'possible' : 'darkpossible');
 		}
 		if (!flags.wildbigkeys) {
-			if (!items.lantern && !items.firerod) {
+			if (!items.lantern && !canUse('firerod')) {
 				return 'darkpossible';
 			} else {
 				return (items.lantern ? 'available' : 'darkavailable');
@@ -442,7 +447,7 @@
     window.TRFrontBoss = function() {
 		if (medallion_check(1) === 'unavailable') return 'unavailable';
 		var dungeoncheck = enemizer_check(9);
-		if (!items.bigkey9 || !items.somaria || dungeoncheck === 'unavailable') return 'unavailable';
+		if (!items.bigkey9 || !canUse('somaria') || (!items.bomb && !items.boots) || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildkeys) {
 			if (items.smallkey9 < 4 && flags.gametype != 'R') return 'unavailable';
 		}
@@ -451,26 +456,26 @@
 
 	window.TRMidBoss = function() {
 		var dungeoncheck = enemizer_check(9);
-		if (!items.bigkey9 || !items.somaria || dungeoncheck === 'unavailable') return 'unavailable';
+		if (!items.bigkey9 || !canUse('somaria') || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildbigkeys || flags.wildkeys) {
 			if (items.smallkey9 < 2 && flags.gametype != 'R') return 'unavailable';
 			if ((items.smallkey9 < 4 && flags.gametype != 'R') || medallion_check(1) === 'possible') return 'possible';
 			return dungeoncheck;
 		} else {
-			if (!items.firerod) return 'possible';
+			if (!canUse('firerod')) return 'possible';
 			return (dungeoncheck === 'available' && medallion_check(1) === 'available' ? (items.lantern ? 'avaialble' : 'darkavailable') : (items.lantern ? 'possible' : 'darkpossible'));
 		}
     };
 	
     window.TRBackBoss = function() {
 		var dungeoncheck = enemizer_check(9);
-		if (!items.bigkey9 || !items.somaria || dungeoncheck === 'unavailable') return 'unavailable';
+		if (!items.bigkey9 || !canUse('somaria') || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildkeys) {
 			if (items.smallkey9 === 0 && flags.gametype != 'R') return 'unavailable';
 			if ((items.smallkey9 < 4 && flags.gametype != 'R') || medallion_check(1) === 'possible') return 'possible';
 			return dungeoncheck;
 		} else {
-			if (!items.firerod) return 'possible';
+			if (!canUse('firerod')) return 'possible';
 			return (dungeoncheck === 'available' && medallion_check(1) === 'available' ? (items.lantern ? 'avaialble' : 'darkavailable') : (items.lantern ? 'possible' : 'darkpossible'));
 		}
     };
@@ -478,7 +483,7 @@
     window.GTBoss = function() {
 		var dungeoncheck = enemizer_check(0);
 		
-		if (!items.bigkey10 || (items.bow === 0 && flags.enemyshuffle === 'N') || (!items.lantern && !items.firerod) || !items.hookshot || ((items.sword < 2 && flags.swordmode != 'S') || (flags.swordmode === 'S' && !items.hammer)) || dungeoncheck === 'unavailable') return 'unavailable';
+		if (!items.bigkey10 || (items.bow === 0 && flags.enemyshuffle === 'N') || (!canUse('lantern') && !canUse('firerod')) || !items.hookshot || ((items.sword < 2 && flags.swordmode != 'S') || (flags.swordmode === 'S' && !items.hammer)) || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildkeys) {
 			if (items.smallkey10 === 0 && flags.gametype != 'R') return 'unavailable';
 			if (items.smallkey10 < 3 && flags.gametype != 'R') return 'possible';
@@ -627,7 +632,7 @@
 		if (flags.wildbigkeys && (flags.wildkeys || flags.gametype === 'R')) {
 			chests[0] = (isDark ? 'DA' : 'A');
 		} else {
-			chests[0] = (items.lantern || items.firerod) ? 'K' : (isDark ? 'DP' : 'P'); //Setting this as the small key as it is always available with a fire source
+			chests[0] = (canUse('lantern') || canUse('firerod')) ? 'K' : (isDark ? 'DP' : 'P'); //Setting this as the small key as it is always available with a fire source
 		}
 		
 		//Map
@@ -635,7 +640,7 @@
 
 		//Big Key Chest
 		if (flags.wildbigkeys) {
-			if ((items.smallkey2 === 0 && flags.gametype != 'R') || (!items.lantern && !items.firerod)) {
+			if ((items.smallkey2 === 0 && flags.gametype != 'R') || (!canUse('lantern') && !canUse('firerod'))) {
 				chests[2] = 'U';
 			} else {
 				if (flags.wildkeys) {
@@ -646,7 +651,7 @@
 				}
 			}
 		} else {
-			if (items.lantern || items.firerod) {
+			if (canUse('lantern') || canUse('firerod')) {
 				chests[2] = 'K';
 			} else {
 				chests[2] = 'U';
@@ -657,13 +662,13 @@
 		if (flags.wildbigkeys) {
 			chests[3] = (items.bigkey2 ? (isDark ? 'DA' : 'A') : 'U');
 		} else if (flags.wildkeys) {
-			if (items.smallkey2 === 1 && (items.lantern || items.firerod)) {
+			if (items.smallkey2 === 1 && (canUse('lantern') || canUse('firerod'))) {
 				chests[3] = (isDark ? 'DA' : 'A');
 			} else {
 				chests[3] = (isDark ? 'DP' : 'P');
 			}
 		} else {
-			if (items.lantern || items.firerod) {
+			if (canUse('lantern') || canUse('firerod')) {
 				chests[3] = (isDark ? 'DA' : 'A');
 			} else {
 				chests[3] = (isDark ? 'DP' : 'P');
@@ -674,13 +679,13 @@
 		if (flags.wildbigkeys) {
 			chests[4] = (items.bigkey2 ? (isDark ? 'DA' : 'A') : 'U');
 		} else if (flags.wildkeys || flags.gametype === 'R') {
-			if ((items.smallkey2 === 1 || flags.gametype === 'R') && (items.lantern || items.firerod)) {
+			if ((items.smallkey2 === 1 || flags.gametype === 'R') && (canUse('lantern') || canUse('firerod'))) {
 				chests[4] = (isDark ? 'DA' : 'A');
 			} else {
 				chests[4] = (isDark ? 'DP' : 'P');
 			}
 		} else {
-			if (items.lantern || items.firerod) {
+			if (canUse('lantern') || canUse('firerod')) {
 				chests[4] = (isDark ? 'DA' : 'A');
 			} else {
 				chests[4] = (isDark ? 'DP' : 'P');
@@ -707,38 +712,8 @@
 		
 		//1) No Key Shuffle
 		if (!flags.wildbigkeys && !flags.wildkeys && flags.gametype != 'R') {
-			if (items.bow === 0 && flags.enemyshuffle === 'N') {
-				//Shooter Room
-				chests[0] = 'P';
-				//Map Chest
-				chests[1] = 'P';
-				//The Arena - Ledge
-				chests[2] = 'P';
-				//Stalfos Basement
-				chests[3] = 'P';
-				//The Arena - Bridge
-				chests[4] = 'P';
-				//Big Key Chest
-				chests[5] = 'P';
-				//Compass Chest
-				chests[6] = 'P';
-				//Harmless Hellway
-				chests[7] = 'P';
-				//Dark Basement - Left
-				chests[8] = (items.lantern || items.firerod) ? 'P' : 'DP';
-				//Dark Basement - Right
-				chests[9] = (items.lantern || items.firerod) ? 'P' : 'DP';
-				//Dark Maze - Top
-				chests[10] = (items.lantern ? 'P' : 'DP');
-				//Dark Maze - Bottom
-				chests[11] = (items.lantern ? 'P' : 'DP');
-				//Big Chest
-				chests[12] = (items.lantern ? 'P' : 'DP');
-				//Boss
-				chests[13] = 'U';
-				
-			} else {
-				//If there is a bow, all chests are available with hammer, with dark logic
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && items.bomb) {
+				//If there is a bow and bombs, all chests are available with hammer, with dark logic
 				//Reserving four keys up front, two in the back, with the big key
 				
 				//Shooter Room
@@ -758,9 +733,9 @@
 				//Harmless Hellway
 				chests[7] = 'K'; //Reserved key 6
 				//Dark Basement - Left
-				chests[8] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[8] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 				//Dark Basement - Right
-				chests[9] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 				//Dark Maze - Top
 				chests[10] = (items.lantern ? 'A' : 'DA');
 				//Dark Maze - Bottom
@@ -769,45 +744,75 @@
 				chests[12] = (items.lantern ? 'A' : 'DA');
 				//Boss
 				chests[13] = ConvertBossToChest(PoDBoss());
+			} else {
+				//Shooter Room
+				chests[0] = 'P';
+				//Map Chest
+				chests[1] = (items.bomb || items.boots) ? 'P' : 'U';
+				//The Arena - Ledge
+				chests[2] = (items.bomb ? 'P' : 'U');
+				//Stalfos Basement
+				chests[3] = 'P';
+				//The Arena - Bridge
+				chests[4] = 'P';
+				//Big Key Chest
+				chests[5] = (items.bomb ? 'P' : 'U');
+				//Compass Chest
+				chests[6] = 'P';
+				//Harmless Hellway
+				chests[7] = 'P';
+				//Dark Basement - Left
+				chests[8] = (items.lantern || canUse('firerod')) ? 'P' : 'DP';
+				//Dark Basement - Right
+				chests[9] = (items.lantern || canUse('firerod')) ? 'P' : 'DP';
+				//Dark Maze - Top
+				chests[10] = (items.lantern ? 'P' : 'DP');
+				//Dark Maze - Bottom
+				chests[11] = (items.lantern ? 'P' : 'DP');
+				//Big Chest
+				chests[12] = (items.bomb ? items.lantern ? 'P' : 'DP' : 'U');
+				//Boss
+				chests[13] = 'U';				
 			}
+
 		//2) Retro (w/ Big Key shuffle checks)
 		//We ignore the wild keys check, as retro overrides it
 		} else if (flags.gametype === 'R') {
 			chests[0] = 'A';
 			
-			if (items.bow > 0 || flags.enemyshuffle != 'N') {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots)) {
 				//Map Chest
 				chests[1] = 'A';
 				//The Arena - Ledge
-				chests[2] = 'A';
+				chests[2] = (items.bomb ? 'A' : 'P');
 			}
 			
 			chests[3] = 'A';
 			chests[4] = 'A';
-			chests[5] = 'A';
+			chests[5] = (items.bomb ? 'A' : 'U');
 			chests[6] = 'A';
 			chests[7] = 'A';
-			chests[8] = (items.lantern || items.firerod) ? 'A' : 'DA';
-			chests[9] = (items.lantern || items.firerod) ? 'A' : 'DA';
+			chests[8] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
+			chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 			chests[10] = (items.lantern ? 'A' : 'DA');
 			chests[11] = (items.lantern ? 'A' : 'DA');
 			//Big Chest
 			if (items.bigkey3) {
-				chests[12] = (items.lantern ? 'A' : 'DA');
+				chests[12] = (items.bomb ? items.lantern ? 'A' : 'DA' : 'P');
 			}			
 		
 		//3) Small Key shuffle only
 		} else if (!flags.wildbigkeys && flags.wildkeys) {
 			chests[0] = 'A';
 
-			if (items.bow > 0 || flags.enemyshuffle != 'N') {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots)) {
 				//Map Chest
 				chests[1] = 'A';
 				//The Arena - Ledge
-				chests[2] = 'A';
+				chests[2] = (items.bomb ? 'A' : 'P');
 			}
 			
-			if ((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) || items.smallkey3 > 0) {
+			if ((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) || items.smallkey3 > 0) {
 				//Stalfos Basement
 				chests[3] = 'A';
 				//The Arena - Bridge
@@ -815,69 +820,39 @@
 			}
 			
 			//Big Key Chest
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 2) || items.smallkey3 > 3) {
+			if (item.bombs && (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 2) || items.smallkey3 > 3)) {
 				chests[5] = 'A';
 			}
 			
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 0) || items.smallkey3 > 1) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 0) || items.smallkey3 > 1) {
 				//Compass Chest
 				chests[6] = 'A';
 				//Dark Basement - Left
-				chests[8] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[8] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 				//Dark Basement - Right
-				chests[9] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 			}
 			
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 3) || items.smallkey3 > 4) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 3) || items.smallkey3 > 4) {
 				//Harmless Hellway
 				chests[7] = 'A';
 			}
 			
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 1) || items.smallkey3 > 2) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 1) || items.smallkey3 > 2) {
 				//Dark Maze - Top
 				chests[10] = (items.lantern ? 'A' : 'DA');
 				//Dark Maze - Bottom
 				chests[11] = (items.lantern ? 'A' : 'DA');
 				//Big Chest
-				chests[12] = (items.lantern ? 'K' : 'DP'); // This is the big key replacement
+				chests[12] = (items.bomb ? items.lantern ? 'K' : 'DP' : 'P'); // This is the big key replacement
 			}
 			
 			//Boss
 			chests[13] = ConvertBossToChest(PoDBoss());
 		//4) Big Key shuffle only
 		} else if (flags.wildbigkeys && !flags.wildkeys) {
-			if (items.bow === 0 && flags.enemyshuffle === 'N') {
-				//Shooter Room
-				chests[0] = 'P';
-				//Map Chest
-				chests[1] = 'P';
-				//The Arena - Ledge
-				chests[2] = 'P';
-				//Stalfos Basement
-				chests[3] = 'P';
-				//The Arena - Bridge
-				chests[4] = 'P';
-				//Big Key Chest
-				chests[5] = 'P';
-				//Compass Chest
-				chests[6] = 'P';
-				//Harmless Hellway
-				chests[7] = 'P';
-				//Dark Basement - Left
-				chests[8] = (items.lantern || items.firerod) ? 'P' : 'DP';
-				//Dark Basement - Right
-				chests[9] = (items.lantern || items.firerod) ? 'P' : 'DP';
-				//Dark Maze - Top
-				chests[10] = (items.lantern ? 'P' : 'DP');
-				//Dark Maze - Bottom
-				chests[11] = (items.lantern ? 'P' : 'DP');
-				//Big Chest
-				chests[12] = (items.bigkey3 ? (items.lantern ? 'P' : 'DP') : 'U');
-				//Boss
-				chests[13] = 'U';
-				
-			} else {
-				//If there is a bow, all chests are available with hammer, with dark logic
+			if ((items.bow > 0 || flags.enemyshuffle === 'N') && item.bomb) {
+				//If there is a bow and bombs, all chests are available with hammer, with dark logic
 				//Reserving four keys up front, two in the back, with the big key
 				
 				//Shooter Room
@@ -897,9 +872,9 @@
 				//Harmless Hellway
 				chests[7] = 'A';
 				//Dark Basement - Left
-				chests[8] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[8] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 				//Dark Basement - Right
-				chests[9] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 				//Dark Maze - Top
 				chests[10] = (items.lantern ? 'A' : 'DA');
 				//Dark Maze - Bottom
@@ -908,19 +883,48 @@
 				chests[12] = (items.bigkey3 ? (items.lantern ? 'A' : 'DA') : 'U');
 				//Boss
 				chests[13] = ConvertBossToChest(PoDBoss());
+			} else {
+				//Shooter Room
+				chests[0] = 'P';
+				//Map Chest
+				chests[1] = (items.bomb || items.boots) ? 'P' : 'U';
+				//The Arena - Ledge
+				chests[2] = 'P';
+				//Stalfos Basement
+				chests[3] = 'P';
+				//The Arena - Bridge
+				chests[4] = 'P';
+				//Big Key Chest
+				chests[5] = (items.bomb ? 'P' : 'U');
+				//Compass Chest
+				chests[6] = 'P';
+				//Harmless Hellway
+				chests[7] = 'P';
+				//Dark Basement - Left
+				chests[8] = (items.lantern || canUse('firerod')) ? 'P' : 'DP';
+				//Dark Basement - Right
+				chests[9] = (items.lantern || canUse('firerod')) ? 'P' : 'DP';
+				//Dark Maze - Top
+				chests[10] = (items.lantern ? 'P' : 'DP');
+				//Dark Maze - Bottom
+				chests[11] = (items.lantern ? 'P' : 'DP');
+				//Big Chest
+				chests[12] = (items.bigkey3 ? (items.lantern ? 'P' : 'DP') : 'U');
+				//Boss
+				chests[13] = 'U';
 			}
 		//5) Small Key + Big Key shuffle
 		} else {
 			chests[0] = 'A';
 			
-			if (items.bow > 0 || flags.enemyshuffle != 'N') {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots)) {
 				//Map Chest
 				chests[1] = 'A';
 				//The Arena - Ledge
-				chests[2] = 'A';
+				chests[2] = (items.bomb ? 'A' : 'P');
 			}
 			
-			if ((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) || items.smallkey3 > 0) {
+			if ((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) || items.smallkey3 > 0) {
 				//Stalfos Basement
 				chests[3] = 'A';
 				//The Arena - Bridge
@@ -928,25 +932,25 @@
 			}
 			
 			//Big Key Chest
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 2) || items.smallkey3 > 3) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 2) || items.smallkey3 > 3) {
 				chests[5] = 'A';
 			}
 			
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 0) || items.smallkey3 > 1) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 0) || items.smallkey3 > 1) {
 				//Compass Chest
 				chests[6] = 'A';
 				//Dark Basement - Left
-				chests[8] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[8] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 				//Dark Basement - Right
-				chests[9] = (items.lantern || items.firerod) ? 'A' : 'DA';
+				chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 			}
 			
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 3) || items.smallkey3 > 4) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 3) || items.smallkey3 > 4) {
 				//Harmless Hellway
 				chests[7] = 'A';
 			}
 			
-			if (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 1) || items.smallkey3 > 2) {
+			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 1) || items.smallkey3 > 2) {
 				//Dark Maze - Top
 				chests[10] = (items.lantern ? 'A' : 'DA');
 				//Dark Maze - Bottom
@@ -973,10 +977,9 @@
 			chests[0] = 'K';
 		}
 		
-		if (items.smallkey4 > 0 || flags.gametype == 'R')
-		{
+		if (!flags.wildkeys || items.smallkey4 > 0 || flags.gametype == 'R') {
 			//Map Chest
-			chests[1] = 'A';
+			chests[1] = (items.bomb ? 'A' : 'U');
 			
 			//Without hammer, cannot go any further
 			if (items.hammer) {
@@ -1050,10 +1053,10 @@
 		
 		//Big Chest
 		if (flags.wildbigkeys) {
-			chests[4] = (items.bigkey5) ? 'A' : 'U';
+			chests[4] = (items.bigkey5) ? items.bomb ? 'A' : 'P' : 'U';
 		} else {
-			if (items.firerod && (items.sword > 0 || flags.swordmode === 'S') && dungeoncheck === 'available') {
-				chests[4] = 'K'; //If is full clearable, set to a key, else possible
+			if (canUse('firerod') && (items.sword > 0 || flags.swordmode === 'S') && dungeoncheck === 'available') {
+				chests[4] = items.bomb ? 'K' : 'P'; //If is full clearable, set to a key, else possible
 			} else {
 				chests[4] = 'P';
 			}
@@ -1063,7 +1066,7 @@
 		chests[5] = 'A';
 		
 		//Cannot proceed without fire rod
-		if (items.firerod) {
+		if (canUse('firerod')) {
 			//Bridge Room
 			chests[6] = 'A';
 
@@ -1115,16 +1118,20 @@
 			}
 			
 			//Boss
-			chests[7] = ConvertBossToChest(TTBoss());
+			if (enemizer[6] === 6 && !item.bomb) {
+				chests[7] = 'U';
+			} else {
+				chests[7] = ConvertBossToChest(TTBoss());
+			}
 		}
 		
 		return available_chests(6, chests, items.maxchest6, items.chest6);
     };
 
     window.IPChests = function() {
-		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+		if (!canUse('firerod') && (!canUse('bombos') || (items.sword == 0 && flags.swordmode != 'S')) || !items.bomb) return 'unavailable';
 		var chests = ['U','U','U','U','U','U','U','U'];
-		
+
         //Compass Chest
 		if (flags.wildkeys || flags.gametype === 'R') {
 			chests[0] = 'A';
@@ -1136,7 +1143,7 @@
 		if (flags.wildkeys) {
 			chests[1] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';			
 		} else {
-			chests[1] = (items.hookshot || items.somaria) ? 'A' : 'P';
+			chests[1] = (items.hookshot || canUse('somaria')) ? 'A' : 'P';
 		}
 		
 		if (items.hammer) {
@@ -1145,14 +1152,14 @@
 				if (flags.wildkeys) {
 					chests[2] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';			
 				} else {
-					chests[2] = (items.hookshot || items.somaria) ? (!flags.wildkeys ? 'K' : 'A') : 'P'; //Reserving as small key 2
+					chests[2] = (items.hookshot || canUse('somaria')) ? (!flags.wildkeys ? 'K' : 'A') : 'P'; //Reserving as small key 2
 				}
 		
 				//Big Key Chest
 				if (flags.wildkeys) {
 					chests[3] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';
 				} else {
-					chests[3] = (items.hookshot || items.somaria) ? 'A' : 'P';
+					chests[3] = (items.hookshot || canUse('somaria')) ? 'A' : 'P';
 				}
 			}
 
@@ -1173,6 +1180,8 @@
 			chests[6] = (items.hammer ? 'K' : 'P');
 		}
 		
+
+		
 		return available_chests(7, chests, items.maxchest7, items.chest7);
     };
 
@@ -1187,9 +1196,9 @@
 		//Spike Chest
 		//Main Lobby
 		if (!flags.wildkeys) {
-			chests[0] = (items.lantern || items.firerod ? 'K' : 'P'); //Reserving as small key 1 if a fire source is available
-			chests[1] = (items.lantern || items.firerod ? 'K' : 'P'); //Reserving as small key 2 if a fire source is available
-			chests[2] = (items.lantern || items.firerod ? 'K' : 'P'); //Reserving as small key 3 if a fire source is available
+			chests[0] = (canUse('lantern') || canUse('firerod') ? 'K' : 'P'); //Reserving as small key 1 if a fire source is available
+			chests[1] = (canUse('lantern') || canUse('firerod') ? 'K' : 'P'); //Reserving as small key 2 if a fire source is available
+			chests[2] = (canUse('lantern') || canUse('firerod') ? 'K' : 'P'); //Reserving as small key 3 if a fire source is available
 		} else {
 			chests[0] = 'A';
 			chests[1] = 'A';
@@ -1199,7 +1208,7 @@
 		//Map Chest
 		chests[3] = 'A';
 
-		if (items.lantern || items.firerod) {
+		if (canUse('lantern') || canUse('firerod')) {
 			//Compass Chest
 			chests[4] = 'A';
 			
@@ -1211,19 +1220,19 @@
 		if (flags.wildbigkeys) {
 			chests[6] = (items.bigkey8 ? 'A' : 'U');
 		} else if (flags.wildkeys) {
-			chests[6] = (items.lantern || items.firerod ? 'K' : 'U'); //Reserving big key
+			chests[6] = (items.canUse('lantern') || canUse('firerod') ? 'K' : 'U'); //Reserving big key
 		} else {
-			chests[6] = (items.lantern || items.firerod ? 'K' : 'P'); //Reserving big key
+			chests[6] = (items.canUse('lantern') || canUse('firerod') ? 'K' : 'P'); //Reserving big key
 		}		
 		
 		//Boss
-		chests[7] = ConvertBossToChest(MMBoss());
+		chests[7] = (items.bomb ? ConvertBossToChest(MMBoss()) : 'U');
 		
 		return available_chests(8, chests, items.maxchest8, items.chest8);
     };
 
     window.TRFrontChests = function() {
-		if (!items.somaria) return 'unavailable';
+		if (!canUse('somaria')) return 'unavailable';
 		if (medallion_check(1) === 'unavailable') return 'unavailable';
 		var isDark = (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots));
 		
@@ -1248,7 +1257,7 @@
 			//Chain Chomps
 			chests[1] = 'K'; //Reserved as second small key
 			
-			if (items.firerod) {
+			if (canUse('firerod')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1260,19 +1269,21 @@
 			chests[4] = 'K'; //Reserved as third small key, regardless if the fire rod is accessable or not
 			
 			//Big Chest
-			chests[5] = (items.firerod ? 'K' : 'P'); //Reserved as big key, if fire rod made it accessable to this point
+			chests[5] = (items.bomb ? canUse('firerod') ? 'K' : 'P' : 'U'); //Reserved as big key, if fire rod made it accessable to this point
 			
-			//Crystaroller Room
-			chests[6] = (items.firerod ? 'K' : 'P'); //Reserved as fourth small key
-			
-			//Laser Bridge
-			chests[7] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			chests[8] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			chests[9] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			chests[10] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			
-			//Boss
-			chests[11] = ConvertBossToChest(TRFrontBoss());
+			if (items.bomb || items.boots) {
+				//Crystaroller Room
+				chests[6] = (canUse('firerod') ? 'K' : 'P'); //Reserved as fourth small key
+				
+				//Laser Bridge
+				chests[7] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[8] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[9] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[10] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				
+				//Boss
+				chests[11] = ConvertBossToChest(TRFrontBoss());
+			}
 		//2) Retro (w/ Big Key shuffle checks)
 		//We ignore the wild keys check, as retro overrides it
 		} else if (flags.gametype === 'R') {
@@ -1282,7 +1293,7 @@
 			//Chain Chmops
 			chests[1] = 'A';
 			
-			if (items.firerod) {
+			if (canUse('firerod')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1294,25 +1305,27 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = (items.firerod ? 'K' : 'P'); //Reserved as big key, if fire rod made it accessable to this point
+			chests[5] = (items.bomb ? canUse('firerod') ? 'K' : 'P' : 'U'); //Reserved as big key, if fire rod made it accessable to this point
 			
-			//Crystaroller Room
-			chests[6] = (items.firerod ? 'A' : 'P');
-			
-			//Laser Bridge
-			chests[7] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			chests[8] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			chests[9] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			chests[10] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-			
-			//Boss
-			chests[11] = ConvertBossToChest(TRFrontBoss());
+			if (items.bomb || items.boots) {
+				//Crystaroller Room
+				chests[6] = (canUse('firerod') ? 'A' : 'P');
+				
+				//Laser Bridge
+				chests[7] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[8] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[9] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[10] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				
+				//Boss
+				chests[11] = ConvertBossToChest(TRFrontBoss());
+			}
 		//3) Small Key shuffle only
 		} else if (!flags.wildbigkeys && flags.wildkeys) {
 			//Compass Chest
 			chests[0] = 'A';
 			
-			if (items.firerod) {
+			if (canUse('firerod')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1329,21 +1342,23 @@
 					chests[4] = 'A';
 				
 					//Big Chest
-					chests[5] = (items.firerod ? 'K' : 'P'); //Reserved as big key, if fire rod made it accessable to this point
+					chests[5] = (items.bomb ? (canUse('firerod') ? 'K' : 'P') : 'U'); //Reserved as big key, if fire rod made it accessable to this point
 					
-					//Crystaroller Room
-					chests[6] = (items.firerod ? 'A' : 'P');
-					
-					if (items.smallkey9 > 2) {
-						//Laser Bridge
-						chests[7] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-						chests[8] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-						chests[9] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-						chests[10] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+					if (items.bomb || items.boots) {
+						//Crystaroller Room
+						chests[6] = (canUse('firerod') ? 'A' : 'P');
 						
-						if (items.smallkey9 > 3) {
-							//Boss
-							chests[11] = ConvertBossToChest(TRFrontBoss());
+						if (items.smallkey9 > 2) {
+							//Laser Bridge
+							chests[7] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+							chests[8] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+							chests[9] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+							chests[10] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+							
+							if (items.smallkey9 > 3) {
+								//Boss
+								chests[11] = ConvertBossToChest(TRFrontBoss());
+							}
 						}
 					}	
 				}
@@ -1351,12 +1366,12 @@
 		//4) Big Key shuffle only
 		} else if (flags.wildbigkeys && !flags.wildkeys) {
 			//Compass Chest
-			chests[0] = (items.firerod ? 'K' : 'P'); //Reserved as first small key
+			chests[0] = (canUse('firerod') ? 'K' : 'P'); //Reserved as first small key
 			
 			//Chain Chomps
-			chests[1] = (items.firerod ? 'K' : 'P'); //Reserved as second small key
+			chests[1] = (canUse('firerod') ? 'K' : 'P'); //Reserved as second small key
 			
-			if (items.firerod) {
+			if (canUse('firerod')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1365,20 +1380,20 @@
 			}
 			
 			//Big Key Chest
-			chests[4] = (items.firerod ? 'K' : 'P'); //Reserved as third small key, regardless if the fire rod is accessable or not
+			chests[4] = (canUse('firerod') ? 'K' : 'P'); //Reserved as third small key, regardless if the fire rod is accessable or not
 			
-			if (items.bigkey9) {
+			if (items.bigkey9 && (items.bomb || items.boots)) {
 				//Big Chest
-				chests[5] = (items.firerod ? 'A' : 'P'); //Reserved as big key, if fire rod made it accessable to this point
+				chests[5] = (items.boots ? (canUse('firerod') ? 'A' : 'P') : 'U'); //Reserved as big key, if fire rod made it accessable to this point
 				
 				//Crystaroller Room
-				chests[6] = (items.firerod ? 'K' : 'P'); //Reserved as fourth small key
+				chests[6] = (canUse('firerod') ? 'K' : 'P'); //Reserved as fourth small key
 				
 				//Laser Bridge
-				chests[7] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-				chests[8] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-				chests[9] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-				chests[10] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[7] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[8] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[9] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[10] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
 				
 				//Boss
 				chests[11] = ConvertBossToChest(TRFrontBoss());
@@ -1388,7 +1403,7 @@
 			//Compass Chest
 			chests[0] = 'A';
 			
-			if (items.firerod) {
+			if (canUse('firerod')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1404,9 +1419,9 @@
 					//Big Key Chest
 					chests[4] = 'A';
 					
-					if (items.bigkey9) {				
+					if (items.bigkey9 && (items.bomb || items.boots)) {				
 						//Big Chest
-						chests[5] = 'A';
+						chests[5] = (items.bomb ? 'A' : 'U');
 						
 						//Crystaroller Room
 						chests[6] = 'A';
@@ -1448,14 +1463,14 @@
 		//1) No Key Shuffle
 		if (!flags.wildbigkeys && !flags.wildkeys && flags.gametype != 'R') {
 			//Compass Chest
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria) {
+			if (canUse('firerod') && canUse('somaria')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1467,19 +1482,19 @@
 			chests[4] = 'A'; //Reserved as third small key
 			
 			//Big Chest
-			chests[5] = (items.somaria || items.hookshot ? (items.somaria && items.firerod ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
+			chests[5] = (canUse('somaria') || items.hookshot ? (canUse('somaria') && canUse('firerod') ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
 			
 			//Crystaroller Room
 			//If you do not have somaria, you can get through with the big key
-			chests[6] = (items.somaria && items.firerod ? 'A' : 'P');
+			chests[6] = (canUse('somaria') && canUse('firerod') ? 'A' : 'P');
 			
 			//Laser Bridge
 			//If you have somaria but not fire rod, there are up to two items not accessible, so only marking two as keys and the rest are possible
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[7] = 'K'; //Reserved as first small key
 				chests[8] = 'K'; //Reserved as second small key
-				chests[9] = (items.firerod ? 'K' : (items.lantern ? 'P' : 'DP'));
-				chests[10] = (items.firerod ? 'K' : (items.lantern ? 'P' : 'DP'));
+				chests[9] = (canUse('firerod') ? 'K' : (items.lantern ? 'P' : 'DP'));
+				chests[10] = (canUse('firerod') ? 'K' : (items.lantern ? 'P' : 'DP'));
 			}
 			
 			//Boss
@@ -1488,14 +1503,14 @@
 		//We ignore the wild keys check, as retro overrides it
 		} else if (flags.gametype === 'R') {
 			//Compass Chest
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria) {
+			if (canUse('firerod') && canUse('somaria')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1507,19 +1522,19 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = (items.somaria || items.hookshot ? (items.somaria && items.firerod ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
+			chests[5] = (canUse('somaria') || items.hookshot ? (canUse('somaria') && canUse('firerod') ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
 			
 			//Crystaroller Room
 			//If you do not have somaria, you can get through with the big key
-			chests[6] = (items.somaria && items.firerod ? 'A' : 'P');
+			chests[6] = (canUse('somaria') && canUse('firerod') ? 'A' : 'P');
 			
 			//Laser Bridge
 			//If you have somaria but not fire rod, there are up to two items not accessible, so only marking two as keys and the rest are possible
-			if (items.somaria) {
-				chests[7] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-				chests[8] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-				chests[9] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-				chests[10] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+			if (canUse('somaria')) {
+				chests[7] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[8] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[9] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+				chests[10] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
 			}
 			
 			//Boss
@@ -1527,14 +1542,14 @@
 		//3) Small Key shuffle only
 		} else if (!flags.wildbigkeys && flags.wildkeys) {
 			//Compass Chest
-			if (items.somaria && items.smallkey9 > 0) {
+			if (canUse('somaria') && items.smallkey9 > 0) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria && items.smallkey9 > 0) {
+			if (canUse('firerod') && canUse('somaria') && items.smallkey9 > 0) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1546,20 +1561,20 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = (items.somaria || items.hookshot ? (items.somaria && items.firerod ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
+			chests[5] = (canUse('somaria') || items.hookshot ? (canUse('somaria') && canUse('firerod') ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
 			
 			//Crystaroller Room
 			//If you do not have somaria, you can get through with the big key
-			chests[6] = (items.somaria && items.firerod && items.smallkey9 > 0 ? 'A' : 'P');
+			chests[6] = (canUse('somaria') && canUse('firerod') && items.smallkey9 > 0 ? 'A' : 'P');
 			
 			//Laser Bridge
 			//If you have somaria but not fire rod, there are up to two items not accessible, so only marking two as keys and the rest are possible
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				if (items.smallkey9 > 2) {
-					chests[7] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-					chests[8] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-					chests[9] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
-					chests[10] = (items.firerod ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+					chests[7] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+					chests[8] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+					chests[9] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
+					chests[10] = (canUse('firerod') ? (items.lantern ? 'A' : 'DA') : (items.lantern ? 'P' : 'DP'));
 				} else if (items.smallley9 > 0) {
 					chests[7] = (items.lantern ? 'P' : 'DP');
 					chests[8] = (items.lantern ? 'P' : 'DP');
@@ -1574,14 +1589,14 @@
 		//4) Big Key shuffle only
 		} else if (flags.wildbigkeys && !flags.wildkeys) {
 			//Compass Chest
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria) {
+			if (canUse('firerod') && canUse('somaria')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1593,7 +1608,7 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			if ((items.somaria || items.hookshot) && items.bigkey9) {
+			if ((canUse('somaria') || items.hookshot) && items.bigkey9) {
 				chests[5] = 'A';
 			}
 			
@@ -1604,7 +1619,7 @@
 			}
 			
 			//Laser Bridge
-			if (items.somaria && items.bigkey9) {
+			if (canUse('somaria') && items.bigkey9) {
 				chests[7] = 'K'; //Reserved as first small key
 				chests[8] = 'K'; //Reserved as second small key
 				chests[9] = 'K'; //Reserved as third small key
@@ -1616,14 +1631,14 @@
 		//5) Small Key + Big Key shuffle
 		} else {
 			//Compass Chest
-			if (items.somaria && items.smallkey9 > 0) {
+			if (canUse('somaria') && items.smallkey9 > 0) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria && items.smallkey9 > 0) {
+			if (canUse('firerod') && canUse('somaria') && items.smallkey9 > 0) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1635,7 +1650,7 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			if ((items.somaria || items.hookshot) && items.bigkey9) {
+			if ((canUse('somaria') || items.hookshot) && items.bigkey9) {
 				chests[5] = 'A';
 			}
 			
@@ -1647,7 +1662,7 @@
 			
 			//Laser Bridge
 			//If you have somaria but not fire rod, there are up to two items not accessible, so only marking two as keys and the rest are possible
-			if (items.somaria && items.bigkey9) {
+			if (canUse('somaria') && items.bigkey9) {
 				chests[7] = (items.smallkey9 > 2 ? (items.lantern ? 'A' : 'DA') : (items.smallkey9 > 0 ? (items.lantern ? 'P' : 'DP') : 'U'));
 				chests[8] = (items.smallkey9 > 2 ? (items.lantern ? 'A' : 'DA') : (items.smallkey9 > 0 ? (items.lantern ? 'P' : 'DP') : 'U'));
 				chests[9] = (items.smallkey9 > 2 ? (items.lantern ? 'A' : 'DA') : (items.smallkey9 > 0 ? (items.lantern ? 'P' : 'DP') : 'U'));
@@ -1678,14 +1693,14 @@
 		//1) No Key Shuffle
 		if (!flags.wildbigkeys && !flags.wildkeys && flags.gametype != 'R') {
 			//Compass Chest
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria) {
+			if (canUse('firerod') && canUse('somaria')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1697,12 +1712,12 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = (items.somaria || items.hookshot ? (items.somaria && items.firerod ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
+			chests[5] = (canUse('somaria') || items.hookshot ? (canUse('somaria') && canUse('firerod') ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
 			
 			//Crystaroller Room
 			//If you have somaria, you can get to it with dark logic
 			//If you do not have somaria, you can go through the eye room and get through with the big key without dark logic
-			chests[6] = (items.somaria ? (items.lantern ? 'A' : 'DA') : 'P');
+			chests[6] = (canUse('somaria') ? (items.lantern ? 'A' : 'DA') : 'P');
 			
 			//Laser Bridge
 			chests[7] = 'K'; //Reserved as first small key
@@ -1716,14 +1731,14 @@
 		//We ignore the wild keys check, as retro overrides it
 		} else if (flags.gametype === 'R') {
 			//Compass Chest
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria) {
+			if (canUse('firerod') && canUse('somaria')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1736,15 +1751,15 @@
 			
 			//Big Chest
 			if (flags.wildbigkeys) {
-				chests[5] = (items.bigkey9 && (items.somaria || items.hookshot) ? 'A' : 'U');
+				chests[5] = (items.bigkey9 && (canUse('somaria') || items.hookshot) ? 'A' : 'U');
 			} else {
-				chests[5] = (items.somaria || items.hookshot ? (items.somaria && items.firerod ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
+				chests[5] = (canUse('somaria') || items.hookshot ? (canUse('somaria') && canUse('firerod') ? 'K' : 'P') : 'U'); //Reserved as big key, could be in the front of the dungeon
 			}
 			
 			//Crystaroller Room
 			//If you have somaria, you can get to it with dark logic
 			//If you do not have somaria, you can go through the eye room and get through with the big key without dark logic
-			chests[6] = (items.somaria ? (items.lantern ? 'A' : 'DA') : 'P');
+			chests[6] = (canUse('somaria') ? (items.lantern ? 'A' : 'DA') : 'P');
 			
 			//Laser Bridge
 			chests[7] = 'A';
@@ -1757,14 +1772,14 @@
 		//3) Small Key shuffle only
 		} else if (!flags.wildbigkeys && flags.wildkeys) {
 			//Compass Chest
-			if (items.somaria && items.smallkey9 > 0) {
+			if (canUse('somaria') && items.smallkey9 > 0) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria && items.smallkey9 > 0) {
+			if (canUse('firerod') && canUse('somaria') && items.smallkey9 > 0) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1776,12 +1791,12 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = ((items.somaria || items.firerod) ? 'K' : 'P');
+			chests[5] = ((canUse('somaria') || canUse('firerod')) ? 'K' : 'P');
 			
 			//Crystaroller Room
 			//If you have somaria, you can get to it with dark logic
 			//If you do not have somaria, you can go through the eye room and get through with the big key without dark logic
-			chests[6] = (items.somaria ? (items.lantern ? 'A' : 'DA') : 'P');
+			chests[6] = (canUse('somaria') ? (items.lantern ? 'A' : 'DA') : 'P');
 			
 			//Laser Bridge
 			chests[7] = 'A';
@@ -1795,14 +1810,14 @@
 		//4) Big Key shuffle only
 		} else if (flags.wildbigkeys && !flags.wildkeys) {
 			//Compass Chest
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria) {
+			if (canUse('firerod') && canUse('somaria')) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1814,32 +1829,32 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = ((items.somaria || items.firerod) && items.bigkey9 ? 'A' : 'U');
+			chests[5] = ((canUse('somaria') || canUse('firerod')) && items.bigkey9 ? 'A' : 'U');
 			
 			//Crystaroller Room
 			//If you have somaria, you can get to it with dark logic
 			//If you do not have somaria, you can go through the eye room and get through with the big key without dark logic
-			chests[6] = (items.somaria ? (items.lantern ? 'A' : (items.bigkey9 ? 'A' : 'DA')) : (items.bigkey9 ? 'A' : 'U'));
+			chests[6] = (canUse('somaria') ? (items.lantern ? 'A' : (items.bigkey9 ? 'A' : 'DA')) : (items.bigkey9 ? 'A' : 'U'));
 			
 			//Laser Bridge
-			chests[7] = (items.somaria ? 'K' : 'P'); //Reserved as first small key if access to the front are available, else possible only with small keys up front
-			chests[8] = (items.somaria ? 'K' : 'P'); //Reserved as second small key if access to the front are available, else possible only with small keys up front
-			chests[9] = (items.somaria ? 'K' : 'P'); //Reserved as third small key if access to the front are available, else possible only with small keys up front
-			chests[10] = (items.somaria ? 'K' : 'P'); //Reserved as fourth small key if access to the front are available, else possible only with small keys up front
+			chests[7] = (canUse('somaria') ? 'K' : 'P'); //Reserved as first small key if access to the front are available, else possible only with small keys up front
+			chests[8] = (canUse('somaria') ? 'K' : 'P'); //Reserved as second small key if access to the front are available, else possible only with small keys up front
+			chests[9] = (canUse('somaria') ? 'K' : 'P'); //Reserved as third small key if access to the front are available, else possible only with small keys up front
+			chests[10] = (canUse('somaria') ? 'K' : 'P'); //Reserved as fourth small key if access to the front are available, else possible only with small keys up front
 			
 			//Boss
 			chests[11] = ConvertBossToChest(TRBackBoss());
 		//5) Small Key + Big Key shuffle
 		} else {
 			//Compass Chest
-			if (items.somaria && items.smallkey9 > 0) {
+			if (canUse('somaria') && items.smallkey9 > 0) {
 				chests[0] = 'A';
 			}
 			
 			//Chain Chomps
 			chests[1] = 'A';
 			
-			if (items.firerod && items.somaria && items.smallkey9 > 0) {
+			if (canUse('firerod') && canUse('somaria') && items.smallkey9 > 0) {
 				//Roller Room - Left
 				chests[2] = 'A';
 				
@@ -1851,12 +1866,12 @@
 			chests[4] = 'A';
 			
 			//Big Chest
-			chests[5] = ((items.somaria || items.firerod) && items.bigkey9 ? 'A' : 'U');
+			chests[5] = ((canUse('somaria') || canUse('firerod')) && items.bigkey9 ? 'A' : 'U');
 			
 			//Crystaroller Room
 			//If you have somaria, you can get to it with dark logic
 			//If you do not have somaria, you can go through the eye room and get through with the big key without dark logic
-			chests[6] = (items.somaria ? (items.lantern ? 'A' : (items.bigkey9 ? 'A' : 'DA')) : (items.bigkey9 ? 'A' : 'U'));
+			chests[6] = (canUse('somaria') ? (items.lantern ? 'A' : (items.bigkey9 ? 'A' : 'DA')) : (items.bigkey9 ? 'A' : 'U'));
 			
 			//Laser Bridge
 			chests[7] = 'A'; //Reserved as first small key
@@ -1904,14 +1919,16 @@
 					//Firesnake Room - 0
 					chests[6] = 'K';  //Reserving as small key 3
 					
-					//Randomizer Room - Top Left - 1
-					chests[7] = 'A';
-					//Randomizer Room - Top Right - 1
-					chests[8] = 'A';
-					//Randomizer Room - Bottom Left - 1
-					chests[9] = 'A';
-					//Randomizer Room - Bottom Right - 1
-					chests[10] = 'A';
+					if (items.bomb) {
+						//Randomizer Room - Top Left - 1
+						chests[7] = 'A';
+						//Randomizer Room - Top Right - 1
+						chests[8] = 'A';
+						//Randomizer Room - Bottom Left - 1
+						chests[9] = 'A';
+						//Randomizer Room - Bottom Right - 1
+						chests[10] = 'A';
+					}
 				}			
 				
 				if (items.hookshot || items.boots) {
@@ -1920,17 +1937,19 @@
 				}	
 			}
 			
-			if ((items.hammer && items.hookshot) || (items.firerod && items.somaria)) {
+			if ((items.hammer && items.hookshot) || (canUse('firerod') && canUse('somaria'))) {
 				//Big Chest - 2
 				chests[11] = 'K'; //Reserving as big key
 				//Bob's Chest - 2
 				chests[12] = 'A';
-				//Big Key Chest - 2
-				chests[13] = 'A';
-				//Big Key Room - Left - 2
-				chests[14] = 'A';
-				//Big Key Room - Right - 2
-				chests[15] = 'A';
+				if (items.bomb) {
+					//Big Key Chest - 2
+					chests[13] = 'A';
+					//Big Key Room - Left - 2
+					chests[14] = 'A';
+					//Big Key Room - Right - 2
+					chests[15] = 'A';
+				}
 			}
 			
 			//Hope Room - Left - 0
@@ -1939,11 +1958,11 @@
 			//Hope Room - Right - 0
 			chests[17] = 'A';
 			
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				//Tile Room - 0
 				chests[18] = 'A';
 				
-				if (items.firerod) {
+				if (canUse('firerod')) {
 					//Compass Room - Top Left - 2
 					chests[19] = 'K'; //Reserving as small key 4
 					//Compass Room - Top Right - 2
@@ -1955,17 +1974,19 @@
 				}
 			}
 			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.lantern || items.firerod)) {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (canUse('lantern') || canUse('firerod'))) {
 				//Mini Helmasaur Room - Left - 3
 				chests[23] = 'A';
 				//Mini Helmasaur Room - Right - 3
 				chests[24] = 'A';
-				//Pre-Moldorm Chest - 3
-				chests[25] = 'A';
-				
-				if (items.hookshot) {
-					//Moldorm Chest
-					chests[26] = 'A';
+				if (items.bomb) {
+					//Pre-Moldorm Chest - 3
+					chests[25] = 'A';
+					
+					if (items.hookshot) {
+						//Moldorm Chest
+						chests[26] = 'A';
+					}
 				}
 			}
 		//2) Retro (w/ Big Key shuffle checks)
@@ -1988,14 +2009,16 @@
 					//Firesnake Room - 0
 					chests[6] = 'A';
 					
-					//Randomizer Room - Top Left - 1
-					chests[7] = 'A';
-					//Randomizer Room - Top Right - 1
-					chests[8] = 'A';
-					//Randomizer Room - Bottom Left - 1
-					chests[9] = 'A';
-					//Randomizer Room - Bottom Right - 1
-					chests[10] = 'A';
+					if (items.bomb) {
+						//Randomizer Room - Top Left - 1
+						chests[7] = 'A';
+						//Randomizer Room - Top Right - 1
+						chests[8] = 'A';
+						//Randomizer Room - Bottom Left - 1
+						chests[9] = 'A';
+						//Randomizer Room - Bottom Right - 1
+						chests[10] = 'A';
+					}
 				}			
 				
 				if (items.hookshot || items.boots) {
@@ -2004,17 +2027,19 @@
 				}	
 			}
 			
-			if ((items.hammer && items.hookshot) || (items.firerod && items.somaria)) {
+			if ((items.hammer && items.hookshot) || (canUse('firerod') && canUse('somaria'))) {
 				//Big Chest - 2
 				chests[11] = (flags.wildbigkeys ? (items.bigkey10 ? 'A' : 'U') : 'K'); //Reserving as big key
 				//Bob's Chest - 2
 				chests[12] = 'A';
-				//Big Key Chest - 2
-				chests[13] = 'A';
-				//Big Key Room - Left - 2
-				chests[14] = 'A';
-				//Big Key Room - Right - 2
-				chests[15] = 'A';
+				if (items.bomb) {
+					//Big Key Chest - 2
+					chests[13] = 'A';
+					//Big Key Room - Left - 2
+					chests[14] = 'A';
+					//Big Key Room - Right - 2
+					chests[15] = 'A';
+				}
 			}
 			
 			//Hope Room - Left - 0
@@ -2023,11 +2048,11 @@
 			//Hope Room - Right - 0
 			chests[17] = 'A';
 			
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				//Tile Room - 0
 				chests[18] = 'A';
 				
-				if (items.firerod) {
+				if (canUse('firerod')) {
 					//Compass Room - Top Left - 2
 					chests[19] = 'A';
 					//Compass Room - Top Right - 2
@@ -2039,17 +2064,19 @@
 				}
 			}
 			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.lantern || items.firerod)) {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (canUse('lantern') || canUse('firerod'))) {
 				//Mini Helmasaur Room - Left - 3
 				chests[23] = 'A';
 				//Mini Helmasaur Room - Right - 3
 				chests[24] = 'A';
-				//Pre-Moldorm Chest - 3
-				chests[25] = 'A';
-				
-				if (items.hookshot) {
-					//Moldorm Chest
-					chests[26] = 'A';
+				if (items.bomb) {
+					//Pre-Moldorm Chest - 3
+					chests[25] = 'A';
+					
+					if (items.hookshot) {
+						//Moldorm Chest
+						chests[26] = 'A';
+					}
 				}
 			}
 		//3) Small Key shuffle only
@@ -2071,7 +2098,7 @@
 					//Firesnake Room - 0
 					chests[6] = 'A';
 					
-					if (items.smallkey10 > 0) {
+					if (items.smallkey10 > 0 && items.bomb) {
 						//Randomizer Room - Top Left - 1
 						chests[7] = 'A';
 						//Randomizer Room - Top Right - 1
@@ -2089,17 +2116,19 @@
 				}	
 			}
 			
-			if (((items.hammer && items.hookshot) || (items.firerod && items.somaria)) && items.smallkey10 > 1) {
+			if (((items.hammer && items.hookshot) || (canUse('firerod') && canUse('somaria'))) && items.smallkey10 > 1) {
 				//Big Chest - 2
 				chests[11] = 'K';
 				//Bob's Chest - 2
 				chests[12] = 'A';
-				//Big Key Chest - 2
-				chests[13] = 'A';
-				//Big Key Room - Left - 2
-				chests[14] = 'A';
-				//Big Key Room - Right - 2
-				chests[15] = 'A';
+				if (items.bomb) {
+					//Big Key Chest - 2
+					chests[13] = 'A';
+					//Big Key Room - Left - 2
+					chests[14] = 'A';
+					//Big Key Room - Right - 2
+					chests[15] = 'A';
+				}
 			}
 			
 			//Hope Room - Left - 0
@@ -2108,11 +2137,11 @@
 			//Hope Room - Right - 0
 			chests[17] = 'A';
 			
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				//Tile Room - 0
 				chests[18] = 'A';
 				
-				if (items.firerod && items.smallkey10 > 1) {
+				if (canUse('firerod') && items.smallkey10 > 1) {
 					//Compass Room - Top Left - 2
 					chests[19] = 'A';
 					//Compass Room - Top Right - 2
@@ -2124,17 +2153,19 @@
 				}
 			}
 			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.lantern || items.firerod) && items.smallkey10 > 0 && items.bigkey10) {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (canUse('lantern') || canUse('firerod')) && items.smallkey10 > 0 && items.bigkey10) {
 				//Mini Helmasaur Room - Left - 3
 				chests[23] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
 				//Mini Helmasaur Room - Right - 3
 				chests[24] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
-				//Pre-Moldorm Chest - 3
-				chests[25] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
-				
-				if (items.hookshot) {
-					//Moldorm Chest - 3
-					chests[26] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
+				if (items.bomb) {
+					//Pre-Moldorm Chest - 3
+					chests[25] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
+					
+					if (items.hookshot) {
+						//Moldorm Chest - 3
+						chests[26] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
+					}
 				}
 			}
 		//4) Big Key shuffle only
@@ -2156,14 +2187,16 @@
 					//Firesnake Room - 0
 					chests[6] = 'K';  //Reserving as small key 3
 					
-					//Randomizer Room - Top Left - 1
-					chests[7] = 'A';
-					//Randomizer Room - Top Right - 1
-					chests[8] = 'A';
-					//Randomizer Room - Bottom Left - 1
-					chests[9] = 'A';
-					//Randomizer Room - Bottom Right - 1
-					chests[10] = 'A';
+					if (items.bomb) {
+						//Randomizer Room - Top Left - 1
+						chests[7] = 'A';
+						//Randomizer Room - Top Right - 1
+						chests[8] = 'A';
+						//Randomizer Room - Bottom Left - 1
+						chests[9] = 'A';
+						//Randomizer Room - Bottom Right - 1
+						chests[10] = 'A';
+					}
 				}			
 				
 				if (items.hookshot || items.boots) {
@@ -2172,17 +2205,19 @@
 				}	
 			}
 			
-			if ((items.hammer && items.hookshot) || (items.firerod && items.somaria)) {
+			if ((items.hammer && items.hookshot) || (canUse('firerod') && canUse('somaria'))) {
 				//Big Chest - 2
 				chests[11] = (items.bigkey10 ? 'A' : 'U');
 				//Bob's Chest - 2
 				chests[12] = 'A';
-				//Big Key Chest - 2
-				chests[13] = 'A';
-				//Big Key Room - Left - 2
-				chests[14] = 'A';
-				//Big Key Room - Right - 2
-				chests[15] = 'A';
+				if (items.bomb) {
+					//Big Key Chest - 2
+					chests[13] = 'A';
+					//Big Key Room - Left - 2
+					chests[14] = 'A';
+					//Big Key Room - Right - 2
+					chests[15] = 'A';
+				}
 			}
 			
 			//Hope Room - Left - 0
@@ -2191,11 +2226,11 @@
 			//Hope Room - Right - 0
 			chests[17] = 'A';
 			
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				//Tile Room - 0
 				chests[18] = 'A';
 				
-				if (items.firerod) {
+				if (canUse('firerod')) {
 					//Compass Room - Top Left - 2
 					chests[19] = 'K'; //Reserving as small key 4
 					//Compass Room - Top Right - 2
@@ -2207,17 +2242,19 @@
 				}
 			}
 			
-			if (items.bigkey10 && (items.bow > 0 || flags.enemyshuffle != 'N') && (items.lantern || items.firerod)) {
+			if (items.bigkey10 && (items.bow > 0 || flags.enemyshuffle != 'N') && (canUse('lantern') || canUse('firerod'))) {
 				//Mini Helmasaur Room - Left - 3
 				chests[23] = 'A';
 				//Mini Helmasaur Room - Right - 3
 				chests[24] = 'A';
-				//Pre-Moldorm Chest - 3
-				chests[25] = 'A';
-				
-				if (items.hookshot) {
-					//Moldorm Chest
-					chests[26] = 'A';
+				if (items.bomb) {
+					//Pre-Moldorm Chest - 3
+					chests[25] = 'A';
+					
+					if (items.hookshot) {
+						//Moldorm Chest
+						chests[26] = 'A';
+					}
 				}
 			}
 		//5) Small Key + Big Key shuffle
@@ -2239,7 +2276,7 @@
 					//Firesnake Room - 0
 					chests[6] = 'A';
 					
-					if (items.smallkey10 > 0) {
+					if (items.smallkey10 > 0 & items.bomb) {
 						//Randomizer Room - Top Left - 1
 						chests[7] = 'A';
 						//Randomizer Room - Top Right - 1
@@ -2257,17 +2294,19 @@
 				}	
 			}
 			
-			if (((items.hammer && items.hookshot) || (items.firerod && items.somaria)) && items.smallkey10 > 1) {
+			if (((items.hammer && items.hookshot) || (canUse('firerod') && canUse('somaria'))) && items.smallkey10 > 1) {
 				//Big Chest - 2
 				chests[11] = (items.bigkey10 ? 'A' : 'U');
 				//Bob's Chest - 2
 				chests[12] = 'A';
-				//Big Key Chest - 2
-				chests[13] = 'A';
-				//Big Key Room - Left - 2
-				chests[14] = 'A';
-				//Big Key Room - Right - 2
-				chests[15] = 'A';
+				if (items.bomb) {
+					//Big Key Chest - 2
+					chests[13] = 'A';
+					//Big Key Room - Left - 2
+					chests[14] = 'A';
+					//Big Key Room - Right - 2
+					chests[15] = 'A';
+				}
 			}
 			
 			//Hope Room - Left - 0
@@ -2276,11 +2315,11 @@
 			//Hope Room - Right - 0
 			chests[17] = 'A';
 			
-			if (items.somaria) {
+			if (canUse('somaria')) {
 				//Tile Room - 0
 				chests[18] = 'A';
 				
-				if (items.firerod && items.smallkey10 > 1) {
+				if (canUse('firerod') && items.smallkey10 > 1) {
 					//Compass Room - Top Left - 2
 					chests[19] = 'A';
 					//Compass Room - Top Right - 2
@@ -2292,115 +2331,23 @@
 				}
 			}
 			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.lantern || items.firerod) && items.smallkey10 > 0 && items.bigkey10) {
+			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (canUse('lantern') || canUse('firerod')) && items.smallkey10 > 0 && items.bigkey10) {
 				//Mini Helmasaur Room - Left - 3
 				chests[23] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
 				//Mini Helmasaur Room - Right - 3
 				chests[24] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
-				//Pre-Moldorm Chest - 3
-				chests[25] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
-				
-				if (items.hookshot) {
-					//Moldorm Chest - 3
-					chests[26] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
+				if (items.bomb) {
+					//Pre-Moldorm Chest - 3
+					chests[25] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
+					
+					if (items.hookshot) {
+						//Moldorm Chest - 3
+						chests[26] = ((items.smallkey10 > 2 || flags.gametype == 'R') ? 'A' : 'P');
+					}
 				}
 			}
 		}		
-		
-		
-		
-		
-		
-		
-		
-		
-		if (flags.wildbigkeys || flags.wildkeys || flags.gametype === 'R') {
-			
-			
-		} else {
-			//Bob's Torch - 0 
-			if (items.boots) chests[0] = 'A';
 
-			if (items.hammer) {
-				if (items.hookshot) {
-					//DMs Room - Top Left - 0
-					chests[1] = 'K'; //Reserving as small key 1
-					//DMs Room - Top Right - 0
-					chests[2] = 'K'; //Reserving as small key 2
-					//DMs Room - Bottom Left - 0
-					chests[3] = 'A';
-					//DMs Room - Bottom Right - 0
-					chests[4] = 'A';
-					
-					//Firesnake Room - 0
-					chests[6] = 'K';  //Reserving as small key 3
-					
-					//Randomizer Room - Top Left - 1
-					chests[7] = 'A';
-					//Randomizer Room - Top Right - 1
-					chests[8] = 'A';
-					//Randomizer Room - Bottom Left - 1
-					chests[9] = 'A';
-					//Randomizer Room - Bottom Right - 1
-					chests[10] = 'A';
-				}			
-				
-				if (items.hookshot || items.boots) {
-					//Map Chest - 1
-					chests[5] = 'A';
-				}	
-			}
-			
-			if ((items.hammer && items.hookshot) || (items.firerod && items.somaria)) {
-				//Big Chest - 2
-				chests[11] = 'K';				
-				//Bob's Chest - 2
-				chests[12] = 'A';
-				//Big Key Chest - 2
-				chests[13] = 'A';
-				//Big Key Room - Left - 2
-				chests[14] = 'A';
-				//Big Key Room - Right - 2
-				chests[15] = 'A';
-			}
-			
-			//Hope Room - Left - 0
-			chests[16] = 'A';
-			
-			//Hope Room - Right - 0
-			chests[17] = 'A';
-			
-			if (items.somaria) {
-				//Tile Room - 0
-				chests[18] = 'A';
-				
-				if (items.firerod) {
-					//Compass Room - Top Left - 2
-					chests[19] = 'K'; //Reserving as small key 4
-					//Compass Room - Top Right - 2
-					chests[20] = 'A';
-					//Compass Room - Bottom Left - 2
-					chests[21] = 'A';
-					//Compass Room - Bottom Right - 2
-					chests[22] = 'A';
-				}
-			}
-			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.lantern || items.firerod)) {
-				//Mini Helmasaur Room - Left - 3
-				chests[23] = 'A';
-				//Mini Helmasaur Room - Right - 3
-				chests[24] = 'A';
-				//Pre-Moldorm Chest - 3
-				chests[25] = 'A';
-				
-				if (items.hookshot) {
-					//Moldorm Chest
-					chests[26] = 'A';
-				}
-			}
-		}
-		
 		if (isDark) {
 			for (var i = 0; i < 27; i++) {
 				if (chests[i] === 'A') chests[i] = 'DA';
@@ -2415,7 +2362,7 @@
 		var frontAccess = flags.entrancemode == 'N' || flags.gametype === 'S' || hasFoundLocation('hc_m') || hasFoundLocation('hc_w') || hasFoundLocation('hc_e');
 		var backAccess = (flags.entrancemode == 'N' && items.glove > 0) || flags.gametype === 'S' || (flags.entrancemode != 'N' && (flags.gametype != 'I' || hasFoundLocation('sanc')));
 		//In Entrance, assume Back of Escape drop is reachable when Sanctuary is. Could make it dependent on map location
-		if(!backAccess && frontAccess && (items.lantern || (flags.itemplacement === 'A' && items.firerod)) && (flags.wildkeys || flags.gametype === 'R') && items.smallkeyhalf0 > 0)
+		if(!backAccess && frontAccess && (items.lantern || (flags.itemplacement === 'A' && canUse('firerod'))) && (flags.wildkeys || flags.gametype === 'R') && items.smallkeyhalf0 > 0)
 			backAccess = true;
 
 		var chests = ['U','U','U','U','U','U','U','U'];
@@ -2423,7 +2370,7 @@
 		if(frontAccess)
 		{
 			chests[0] = backAccess || flags.wildkeys || flags.gametype === 'R' ? 'A' : 'P';
-			chests[1] = backAccess && !(flags.wildkeys || flags.gametype === 'R') && !(items.lantern || (flags.itemplacement === 'A' && items.firerod)) ? 'K' : 'A';
+			chests[1] = backAccess && !(flags.wildkeys || flags.gametype === 'R') && !(items.lantern || (flags.itemplacement === 'A' && canUse('firerod'))) ? 'K' : 'A';
 			chests[2] = 'A';
 		}
 
@@ -2431,16 +2378,16 @@
 			chests[3] = 'P';
 		else
 			if(frontAccess || (backAccess && (flags.wildkeys || flags.gametype === 'R') && items.smallkeyhalf0 > 0))
-				chests[3] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'A' : 'DA';
+				chests[3] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'A' : 'DA';
 			else
 			{
 				if(backAccess && !(flags.wildkeys || flags.gametype === 'R'))
-					chests[3] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'A' : 'K';
+					chests[3] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'A' : 'K';
 			}
 
 		if(backAccess)
 		{
-			chests[4] = frontAccess || flags.wildkeys || flags.gametype === 'R' ? 'A' : (items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'K' : 'P');
+			chests[4] = frontAccess || flags.wildkeys || flags.gametype === 'R' ? 'A' : (items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'K' : 'P');
 			chests[5] = 'A';
 			chests[6] = 'A';
 			chests[7] = 'A';
@@ -2449,17 +2396,17 @@
 		{
 			if(frontAccess && (flags.wildkeys || flags.gametype === 'R') && items.smallkeyhalf0 > 0)
 			{
-				chests[4] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'A' : 'DA';
-				chests[5] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'A' : 'DA';
-				chests[6] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'A' : 'DA';
-				chests[7] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'A' : 'DA';
+				chests[4] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'A' : 'DA';
+				chests[5] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'A' : 'DA';
+				chests[6] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'A' : 'DA';
+				chests[7] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'A' : 'DA';
 			}
 			if(frontAccess && !(flags.wildkeys || flags.gametype === 'R'))
 			{
-				chests[4] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'P' : 'DP';
-				chests[5] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'P' : 'DP';
-				chests[6] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'P' : 'DP';
-				chests[7] = items.lantern || (flags.itemplacement === 'A' && items.firerod) ? 'P' : 'DP';
+				chests[4] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'P' : 'DP';
+				chests[5] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'P' : 'DP';
+				chests[6] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'P' : 'DP';
+				chests[7] = items.lantern || (flags.itemplacement === 'A' && canUse('firerod')) ? 'P' : 'DP';
 			}
 			//if(flags.gametype != 'I')
 			//	chests[7] = frontAccess || backAccess || flags.wildkeys || flags.gametype === 'R' ? 'A' : 'P'; //Could be key
