@@ -89,7 +89,7 @@
 	{
 		return items.flute && canReachOtherWorld();
 	}
-	
+
 	function available_chests(dungeonid, allchests, maxchest, chestcount) {
 		var achests = 0;
 		var pchests = 0;
@@ -747,10 +747,12 @@
 			} else {
 				//Shooter Room
 				chests[0] = 'P';
-				//Map Chest
-				chests[1] = (items.bomb || items.boots) ? 'P' : 'U';
-				//The Arena - Ledge
-				chests[2] = (items.bomb ? 'P' : 'U');
+				if (items.bow > 0 || flags.enemyshuffle != 'N') {
+					//Map Chest
+					chests[1] = (items.bomb || items.boots) ? 'P' : 'U';
+					//The Arena - Ledge
+					chests[2] = (items.bomb ? 'P' : 'U');
+				}
 				//Stalfos Basement
 				chests[3] = 'P';
 				//The Arena - Bridge
@@ -780,21 +782,29 @@
 		} else if (flags.gametype === 'R') {
 			chests[0] = 'A';
 			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots)) {
+			if (items.bow > 0 || flags.enemyshuffle != 'N') {
 				//Map Chest
-				chests[1] = 'A';
+				chests[1] = (items.bomb || items.boots) ? 'A' : 'U';
 				//The Arena - Ledge
-				chests[2] = (items.bomb ? 'A' : 'P');
+				chests[2] = (items.bomb ? 'A' : 'U');
 			}
-			
+			//Stalfos Basement
 			chests[3] = 'A';
+			//The Arena - Bridge
 			chests[4] = 'A';
+			//Big Key Chest
 			chests[5] = (items.bomb ? 'A' : 'U');
+			//Compass Chest
 			chests[6] = 'A';
+			//Harmless Hellway
 			chests[7] = 'A';
+			//Dark Basement - Left
 			chests[8] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
+			//Dark Basement - Right
 			chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
+			//Dark Maze - Top
 			chests[10] = (items.lantern ? 'A' : 'DA');
+			//Dark Maze - Bottom
 			chests[11] = (items.lantern ? 'A' : 'DA');
 			//Big Chest
 			if (items.bigkey3) {
@@ -805,11 +815,11 @@
 		} else if (!flags.wildbigkeys && flags.wildkeys) {
 			chests[0] = 'A';
 
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots)) {
+			if (items.bow > 0 || flags.enemyshuffle != 'N') {
 				//Map Chest
-				chests[1] = 'A';
+				chests[1] = (items.bomb || items.boots) ? 'A' : 'U';
 				//The Arena - Ledge
-				chests[2] = (items.bomb ? 'A' : 'P');
+				chests[2] = (items.bomb ? 'A' : 'U');
 			}
 			
 			if ((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) || items.smallkey3 > 0) {
@@ -820,7 +830,7 @@
 			}
 			
 			//Big Key Chest
-			if (item.bombs && (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 2) || items.smallkey3 > 3)) {
+			if (items.bomb && (((items.hammer && (items.bow > 0 || flags.enemyshuffle != 'N')) && items.smallkey3 > 2) || items.smallkey3 > 3)) {
 				chests[5] = 'A';
 			}
 			
@@ -851,7 +861,7 @@
 			chests[13] = ConvertBossToChest(PoDBoss());
 		//4) Big Key shuffle only
 		} else if (flags.wildbigkeys && !flags.wildkeys) {
-			if ((items.bow > 0 || flags.enemyshuffle === 'N') && item.bomb) {
+			if ((items.bow > 0 || flags.enemyshuffle === 'N') && items.bomb) {
 				//If there is a bow and bombs, all chests are available with hammer, with dark logic
 				//Reserving four keys up front, two in the back, with the big key
 				
@@ -886,10 +896,12 @@
 			} else {
 				//Shooter Room
 				chests[0] = 'P';
-				//Map Chest
-				chests[1] = (items.bomb || items.boots) ? 'P' : 'U';
-				//The Arena - Ledge
-				chests[2] = 'P';
+				if (items.bow > 0 || flags.enemyshuffle === 'N') {
+					//Map Chest
+					chests[1] = (items.bomb || items.boots) ? 'P' : 'U';
+					//The Arena - Ledge
+					chests[2] = items.bomb ? 'P' : 'U';
+				}
 				//Stalfos Basement
 				chests[3] = 'P';
 				//The Arena - Bridge
@@ -909,7 +921,7 @@
 				//Dark Maze - Bottom
 				chests[11] = (items.lantern ? 'P' : 'DP');
 				//Big Chest
-				chests[12] = (items.bigkey3 ? (items.lantern ? 'P' : 'DP') : 'U');
+				chests[12] = (items.bigkey3 && items.bomb ? (items.lantern ? 'P' : 'DP') : 'U');
 				//Boss
 				chests[13] = 'U';
 			}
@@ -917,11 +929,11 @@
 		} else {
 			chests[0] = 'A';
 			
-			if ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots)) {
+			if (items.bow > 0 || flags.enemyshuffle != 'N') {
 				//Map Chest
-				chests[1] = 'A';
+				chests[1] = (items.bomb || items.boots ? 'A' : 'U');
 				//The Arena - Ledge
-				chests[2] = (items.bomb ? 'A' : 'P');
+				chests[2] = (items.bomb ? 'A' : 'U');
 			}
 			
 			if ((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) || items.smallkey3 > 0) {
@@ -932,7 +944,7 @@
 			}
 			
 			//Big Key Chest
-			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 2) || items.smallkey3 > 3) {
+			if (items.bomb && (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N'))) && items.smallkey3 > 2) || items.smallkey3 > 3)) {
 				chests[5] = 'A';
 			}
 			
@@ -945,8 +957,8 @@
 				chests[9] = (items.lantern || canUse('firerod')) ? 'A' : 'DA';
 			}
 			
+			//Harmless Hellway
 			if (((items.hammer && ((items.bow > 0 || flags.enemyshuffle != 'N') && (items.bomb || items.boots))) && items.smallkey3 > 3) || items.smallkey3 > 4) {
-				//Harmless Hellway
 				chests[7] = 'A';
 			}
 			
@@ -956,7 +968,7 @@
 				//Dark Maze - Bottom
 				chests[11] = (items.lantern ? 'A' : 'DA');
 				//Big Chest
-				chests[12] = (items.bigkey3 ? (items.lantern ? 'A' : 'DA') : 'U');
+				chests[12] = (items.bigkey3 && items.bomb ? (items.lantern ? 'A' : 'DA') : 'U');
 			}
 			
 			//Boss
@@ -968,6 +980,7 @@
 
     window.SPChests = function() {
 		if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
+		if (!items.bomb || !items.hookshot || !melee_bow() || !items.firerod || !cane()) return 'unavailable';
 		var chests = ['U','U','U','U','U','U','U','U','U','U'];
 		
 		//Entrance
@@ -987,12 +1000,10 @@
 				chests[2] = 'A';
 
 				//Big Chest
-				if (items.bigkey4) {
-					if (flags.wildbigkeys) {
-						chests[3] = 'A';
-					} else {
-						chests[3] = (items.hookshot ? 'K' : 'U');
-					}
+				if (flags.wildbigkeys) {
+					chests[3] = (items.bigkey4 ? 'A' : 'U');
+				} else {
+					chests[3] = (items.hookshot ? 'K' : 'U');
 				}
 
 				//West Chest
@@ -1052,13 +1063,15 @@
 		chests[3] = 'A';
 		
 		//Big Chest
-		if (flags.wildbigkeys) {
-			chests[4] = (items.bigkey5) ? items.bomb ? 'A' : 'P' : 'U';
-		} else {
-			if (canUse('firerod') && (items.sword > 0 || flags.swordmode === 'S') && dungeoncheck === 'available') {
-				chests[4] = items.bomb ? 'K' : 'P'; //If is full clearable, set to a key, else possible
+		if (items.bomb) {
+			if (flags.wildbigkeys) {
+				chests[4] = items.bigkey5 ? 'A' : 'U';
 			} else {
-				chests[4] = 'P';
+				if (canUse('firerod') && (items.sword > 0 || flags.swordmode === 'S') && dungeoncheck === 'available') {
+					chests[4] = 'K'; //If is full clearable, set to a key, else possible
+				} else {
+					chests[4] = 'P';
+				}
 			}
 		}
 		
@@ -1129,58 +1142,58 @@
     };
 
     window.IPChests = function() {
-		if (!canUse('firerod') && (!canUse('bombos') || (items.sword == 0 && flags.swordmode != 'S')) || !items.bomb) return 'unavailable';
+		if (!canUse('firerod') && (!canUse('bombos') || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
 		var chests = ['U','U','U','U','U','U','U','U'];
 
         //Compass Chest
 		if (flags.wildkeys || flags.gametype === 'R') {
 			chests[0] = 'A';
 		} else {
-			chests[0] = 'K'; //Reserving as small key 1
+			chests[0] = items.bomb ? 'K' : 'P'; //Reserving as small key 1 but only if we can get further into the dungeon as well
 		}
 		
-        //Spike Room
-		if (flags.wildkeys) {
-			chests[1] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';			
-		} else {
-			chests[1] = (items.hookshot || canUse('somaria')) ? 'A' : 'P';
-		}
-		
-		if (items.hammer) {
-			//Map Chest
-			if (items.glove > 0) {
-				if (flags.wildkeys) {
-					chests[2] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';			
-				} else {
-					chests[2] = (items.hookshot || canUse('somaria')) ? (!flags.wildkeys ? 'K' : 'A') : 'P'; //Reserving as small key 2
-				}
-		
-				//Big Key Chest
-				if (flags.wildkeys) {
-					chests[3] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';
-				} else {
-					chests[3] = (items.hookshot || canUse('somaria')) ? 'A' : 'P';
-				}
+		if (items.bomb) {
+			//Spike Room
+			if (flags.wildkeys) {
+				chests[1] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';			
+			} else {
+				chests[1] = (items.hookshot || canUse('somaria')) ? 'A' : 'P';
 			}
+			
+			if (items.hammer) {
+				//Map Chest
+				if (items.glove > 0) {
+					if (flags.wildkeys) {
+						chests[2] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';			
+					} else {
+						chests[2] = (items.hookshot || canUse('somaria')) ? (!flags.wildkeys ? 'K' : 'A') : 'P'; //Reserving as small key 2
+					}
+			
+					//Big Key Chest
+					if (flags.wildkeys) {
+						chests[3] = (items.hookshot || (items.smallkey7 > 0 || flags.gametype == 'R')) ? 'A' : 'U';
+					} else {
+						chests[3] = (items.hookshot || canUse('somaria')) ? 'A' : 'P';
+					}
+				}
 
-			//Boss
-			chests[7] = ConvertBossToChest(IPBoss());
+				//Boss
+				chests[7] = ConvertBossToChest(IPBoss());
+			}
+			
+			//Freezor Chest
+			chests[4] = 'A';
+			
+			//Iced T Room
+			chests[5] = 'A';
+			
+			//Big Chest
+			if (flags.wildbigkeys) {
+				chests[6] = (items.bigkey7 ? 'A' : 'U');
+			} else {
+				chests[6] = (items.hammer ? 'K' : 'P');
+			}
 		}
-		
-        //Freezor Chest
-		chests[4] = 'A';
-		
-        //Iced T Room
-		chests[5] = 'A';
-		
-        //Big Chest
-		if (flags.wildbigkeys) {
-			chests[6] = (items.bigkey7 ? 'A' : 'U');
-		} else {
-			chests[6] = (items.hammer ? 'K' : 'P');
-		}
-		
-
 		
 		return available_chests(7, chests, items.maxchest7, items.chest7);
     };
