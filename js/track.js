@@ -1736,6 +1736,7 @@
 				bow: { max: 2 },
 				boomerang: { max: 3 },
 				glove: { max: 2 },
+				magic: { max: 2},
 				smallkey0: { min: 0, max: flags.doorshuffle === 'C' ? 29 : 0 },
 				smallkey1: { min: 0, max: flags.doorshuffle === 'C' ? 29 : 1 },
 				smallkey2: { min: 0, max: flags.doorshuffle === 'C' ? 29 : 1 },

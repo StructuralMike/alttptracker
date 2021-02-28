@@ -29,14 +29,15 @@
 	}
 
 
-	function canUse(x) { return (flags.futurono || (items.magic && items[x])); }	
+	function canUse(x) { return (flags.futurono || (items.magic > 0 && items[x])); }	
     function melee() { return items.sword || items.hammer; }
     function melee_bow() { return melee() || items.bow > 0; }
     function cane() { return canUse('somaria') || canUse('byrna'); }
     function rod() { return canUse('firerod') || canUse('icerod'); }
 	function canHitSwitch() { return (melee_bow() || cane() || rod() || items.boomerang || items.hookshot || items.bomb); }
+	function halfMagic() { return ((flags.futurono && items.magic > 0) || items.magic > 1) }
 
-	function agatowerweapon() { return items.sword > 0 || canUse('somaria') || items.bow > 0 || items.hammer || canUse('firerod') || (canUse('byrna') && (items.bottle > 0 || items.magic)); }
+	function agatowerweapon() { return items.sword > 0 || canUse('somaria') || items.bow > 0 || items.hammer || canUse('firerod') || (canUse('byrna') && (items.bottle > 0 || halfMagic())); }
 	function isdarkdm() { return !items.flute && !items.lantern; }
     function always() { return 'available'; }
 
@@ -347,7 +348,7 @@
 				caption: 'Byrna Spike Cave',
 				is_opened: false,
 				is_available: function() {
-					return canReachWDM() && items.moonpearl && items.glove && items.hammer && (canUse('byrna') || (canUse('cape') && (items.bottle || items.magic))) ?
+					return canReachWDM() && items.moonpearl && items.glove && items.hammer && (canUse('byrna') || (canUse('cape') && (items.bottle || halfMagic()))) ?
 						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
@@ -1428,7 +1429,7 @@
 				caption: 'Byrna Spike Cave',
 				is_opened: false,
 				is_available: function() {
-					return items.glove && items.hammer && (canUse('byrna') || (canUse('cape') && (items.bottle || items.magic))) ?
+					return items.glove && items.hammer && (canUse('byrna') || (canUse('cape') && (items.bottle || halfMagic()))) ?
 						items.lantern || activeFlute() ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
@@ -2239,7 +2240,7 @@
 				caption: 'Byrna Spike Cave',
 				is_opened: false,
 				is_available: function() {
-					return items.moonpearl && items.glove && items.hammer && (canUse('byrna') || (canUse('cape') && (items.bottle || items.magic))) ?
+					return items.moonpearl && items.glove && items.hammer && (canUse('byrna') || (canUse('cape') && (items.bottle || halfMagic()))) ?
 						items.lantern || items.flute ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
