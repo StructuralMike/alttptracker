@@ -425,7 +425,7 @@ function autotrackDoTracking(data) {
         setitem("tunic", data[0x35B] + 1);
 
     if (changed(0x37B))
-        setitem("magic", data[0x37B] > 0);
+        setitem("magic", data[0x37B]);
 	
     var prevbottles = -1;
     if (autotrackPrevData !== null)
