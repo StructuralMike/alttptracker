@@ -359,7 +359,7 @@
 
     window.DPBoss = function() {
 		var dungeoncheck = enemizer_check(1);
-		if (!items.bigkey1 || dungeoncheck === 'unavailable' || (items.glove === 0 && flags.glitches === 'N') || (!canUse('firerod') && !items.lantern)) return 'unavailable';
+		if (!items.bigkey1 || dungeoncheck === 'unavailable' || (items.glove === 0 && flags.glitches === 'N') || (!canUse('firerod') && !canUse('lantern'))) return 'unavailable';
 		if (flags.wildkeys && !flags.wildbigkeys && (items.smallkey1 === 0 && flags.gametype != 'R') && !items.boots) return 'possible';
 		if (!flags.wildkeys && !flags.wildbigkeys && !items.boots) return 'possible';
 		return dungeoncheck;
