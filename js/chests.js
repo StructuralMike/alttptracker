@@ -640,7 +640,7 @@
 				caption: 'Mad Batter {hammer}/{mirror} + {powder}',
 				is_opened: false,
 				is_available: function() {
-					return items.powder && (items.hammer || items.boots || (items.mirror && (items.moonpearl && ((items.glove === 2 && canReachNWDW()) || (canSpinSpeed() && canReachNEDW()))))) ? 'available' : 'unavailable';
+					return canUse('powder') && (items.hammer || items.boots || (items.mirror && (items.moonpearl && ((items.glove === 2 && canReachNWDW()) || (canSpinSpeed() && canReachNEDW()))))) ? 'available' : 'unavailable';
 				}
 			}, { // [60]
 				caption: 'Take the frog home {mirror} / Save+Quit',
@@ -1753,7 +1753,7 @@
 				caption: 'Mad Batter {hammer} + {powder}',
 				is_opened: false,
 				is_available: function() {
-					return items.powder && items.hammer && canReachLightWorld() ? 'available' : 'unavailable';
+					return canUse('powder') && items.hammer && canReachLightWorld() ? 'available' : 'unavailable';
 				}
 			}, { // [60]
 				caption: 'Take the frog home',
@@ -2578,7 +2578,7 @@
 				caption: 'Mad Batter {hammer}/{mirror} + {powder}',
 				is_opened: false,
 				is_available: function() {
-					return items.powder && (items.hammer || items.glove === 2 && items.mirror && items.moonpearl) ? 'available' : 'unavailable';
+					return canUse('powder') && (items.hammer || items.glove === 2 && items.mirror && items.moonpearl) ? 'available' : 'unavailable';
 				}
 			}, { // [60]
 				caption: 'Take the frog home {mirror} / Save+Quit',
