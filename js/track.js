@@ -147,7 +147,7 @@
 				if (label != 'bomb') {
 					nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 				} else {
-					if (standardbombs || flags.futuroyes) {
+					if (standardbombs || flags.futuro) {
 						//Because you always have bombs...except in Standard
 						nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 					}
@@ -2651,7 +2651,7 @@
 			window.addEventListener("message", receiveMessage, false);
 		
 		standardbombs = true;
-		if (flags.gametype != 'S' && flags.futurono) {
+		if (flags.gametype != 'S' && !flags.futuro) {
 			toggle('bomb');
 			standardbombs = false;
 		}

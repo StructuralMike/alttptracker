@@ -21,7 +21,7 @@
 		return crystal_count;
 	}
 
-	function canUse(x) { return (flags.futurono || (items.magic && items[x])); }	
+	function canUse(x) { return (items.magic > 0 && items[x]); }	
     function melee() { return items.sword || items.hammer; }
     function melee_bow() { return melee() || items.bow > 0; }
     function cane() { return canUse('somaria') || canUse('byrna'); }

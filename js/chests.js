@@ -29,13 +29,13 @@
 	}
 
 
-	function canUse(x) { return (flags.futurono || (items.magic > 0 && items[x])); }	
+	function canUse(x) { return (items.magic > 0 && items[x]); }	
     function melee() { return items.sword || items.hammer; }
     function melee_bow() { return melee() || items.bow > 0; }
     function cane() { return canUse('somaria') || canUse('byrna'); }
     function rod() { return canUse('firerod') || canUse('icerod'); }
 	function canHitSwitch() { return (melee_bow() || cane() || rod() || items.boomerang || items.hookshot || items.bomb); }
-	function halfMagic() { return ((flags.futurono && items.magic > 0) || items.magic > 1) }
+	function halfMagic() { return (items.magic > 1) }
 
 	function agatowerweapon() { return items.sword > 0 || canUse('somaria') || items.bow > 0 || items.hammer || canUse('firerod') || (canUse('byrna') && (items.bottle > 0 || halfMagic())); }
 	function isdarkdm() { return !items.flute && !items.lantern; }
@@ -1922,7 +1922,7 @@
 					if (!canReachDarkWorld()) return 'unavailable';
 					if (!items.glove && !items.agahnim) return 'unavailable';
 					if (!can_reach_outcast() && (!items.agahnim || !items.moonpearl || !items.hammer)) return 'unavailable';
-					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer'],'boss');
+					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.SPBoss();
@@ -1931,7 +1931,7 @@
 					if (!canReachDarkWorld()) return 'unavailable';
 					if (!items.glove && !items.agahnim) return 'unavailable';
 					if (!can_reach_outcast() && (!items.agahnim || !items.moonpearl || !items.hammer)) return 'unavailable';
-					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer'],'item');
+					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.SPChests();

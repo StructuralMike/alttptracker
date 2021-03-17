@@ -1,14 +1,14 @@
 (function(window) {
     'use strict';
 
-	function canUse(x) { return (flags.futurono || (items.magic && items[x])); }
+	function canUse(x) { return (items.magic > 0 && items[x]); }
 	function melee() { return items.sword || items.hammer; }
     function melee_bow() { return melee() || items.bow > 0; }
     function cane() { return canUse('somaria') || canUse('byrna'); }
     function rod() { return canUse('firerod') || canUse('icerod'); }
 
     function medallion_check(i) {
-        if ((items.sword === 0 && flags.swordmode != 'S') || !canUse('bombos') && !canUse('ether') && !canUse('quake')) return 'unavailable';
+        if ((items.sword === 0 && flags.swordmode != 'S') || (!canUse('bombos') && !canUse('ether') && !canUse('quake'))) return 'unavailable';
         if (medallions[i] === 1 && !canUse('bombos') ||
             medallions[i] === 2 && !canUse('ether') ||
             medallions[i] === 3 && !canUse('quake')) return 'unavailable';
@@ -980,7 +980,6 @@
 
     window.SPChests = function() {
 		if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
-		if (!items.bomb || !items.hookshot || !melee_bow() || !items.firerod || !cane()) return 'unavailable';
 		var chests = ['U','U','U','U','U','U','U','U','U','U'];
 		
 		//Entrance
@@ -1233,9 +1232,9 @@
 		if (flags.wildbigkeys) {
 			chests[6] = (items.bigkey8 ? 'A' : 'U');
 		} else if (flags.wildkeys) {
-			chests[6] = (items.canUse('lantern') || canUse('firerod') ? 'K' : 'U'); //Reserving big key
+			chests[6] = (canUse('lantern') || canUse('firerod') ? 'K' : 'U'); //Reserving big key
 		} else {
-			chests[6] = (items.canUse('lantern') || canUse('firerod') ? 'K' : 'P'); //Reserving big key
+			chests[6] = (canUse('lantern') || canUse('firerod') ? 'K' : 'P'); //Reserving big key
 		}		
 		
 		//Boss

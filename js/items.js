@@ -27,7 +27,7 @@
 		wildkeys: (query.f.charAt(19) === '1' ? true : false),
 		wildbigkeys: (query.f.charAt(20) === '1' ? true : false),
 		ambrosia: query.f.charAt(21),
-		futuro: query.f.charAt(22),
+		futuro: (query.f.charAt(22) === 'Y' ? true : false),
 		autotracking: query.f.charAt(23),
 		trackingport: query.f.charAt(24) + query.f.charAt(25) + query.f.charAt(26) + query.f.charAt(27),
         sprite: query.sprite
@@ -121,7 +121,7 @@
         agahnim: false,
         agahnim2: false,
 		bomb: false,
-		magic: 0,
+		magic: (flags.futuro ? 0 : 1),
 		bombfloor: false,
 
         boss0: false,
