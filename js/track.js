@@ -147,8 +147,8 @@
 				if (label != 'bomb') {
 					nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 				} else {
-					if (standardbombs || flags.futuro) {
-						//Because you always have bombs...except in Standard
+					if (standardbombs || !flags.futuro) {
+						//Because you always have bombs...except in Standard and Futuro
 						nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 					}
 				}
@@ -1435,6 +1435,8 @@
 		document.getElementById("shuffledbigkeys").checked = (flags.wildbigkeys ? true : false);
 		document.getElementById("goalselect").value = flags.goals;
 		document.getElementById("swordselect").value = flags.swordmode;
+		document.getElementById("futuro").value = (flags.futuro ? true : false);
+		
 		
 		$('#flagsModal').show();
 	}
@@ -1861,7 +1863,7 @@
 				document.getElementById('bigkey10').style.visibility = 'hidden';
 				document.getElementById('bigkeyhalf0').style.visibility = 'hidden';
 				document.getElementById('bigkeyhalf1').style.visibility = 'hidden';
-			} else {
+			} else if (document.getElementById('shuffledbigkeys').checked != flags.wildbigkeys) {
 				if (items.bigkey0) toggle('bigkey0');
 				if (items.bigkey1) toggle('bigkey1');
 				if (items.bigkey2) toggle('bigkey2');
@@ -2110,6 +2112,11 @@
 			currentURL = currentURL.replace(fParam, replaceParam);
 			
 			window.location.href = currentURL;
+		}
+
+		//Futuro
+		if (document.getElementById('futuro').checked != flags.futuro) {
+			standardbombs = false;
 		}
 		
 		updateMapTracker();
@@ -2455,6 +2462,11 @@
 		if (flags.entrancemode === 'N' && flags.doorshuffle === 'N') {
 			document.getElementById('agamagicsplitdiv').style.display = 'none';
 			document.getElementById('hcctchests').style.display = 'none';
+		} else if ( flags.futuro ) {
+			document.getElementById('bighalfmagic').style.display = 'none';
+			document.getElementById('agasplitdiv').style.display = 'none';
+			rightClickChest('chest12');
+			toggle('chest12');
 		} else {
 			document.getElementById('bighalfmagic').style.display = 'none';
 			document.getElementById('agasplitdiv').style.display = 'none';

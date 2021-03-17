@@ -1063,14 +1063,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!canReachLightWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow'],'boss');
+					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.EPBoss();
 				},
 				can_get_chest: function() {
 					if (!canReachLightWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow'],'item');
+					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.EPChests();
@@ -1081,7 +1081,7 @@
 				is_beatable: function() {
 					//if (!canReachLightWorldBunny() || !items.book) return 'unavailable';
 					if (!canReachLightWorld() || !items.book) return 'unavailable';
-					var doorcheck = window.doorCheck(1,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','glove','firesource'],'boss');
+					var doorcheck = window.doorCheck(1,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','glove','firesource','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.DPBoss();
@@ -1089,7 +1089,7 @@
 				can_get_chest: function() {
 					//if (!items.book || !canReachLightWorldBunny()) return 'unavailable';
 					if (!canReachLightWorld() || !items.book) return 'unavailable';
-					var doorcheck = window.doorCheck(1,false,false,false,['boots','glove','firesource'],'item');
+					var doorcheck = window.doorCheck(1,false,false,false,['boots','glove','firesource','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.DPChests();
@@ -1099,14 +1099,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if(!(items.glove || activeFlute()) || !items.moonpearl || !items.hammer || !(items.hookshot || items.glove === 2)) return 'unavailable';
-					var doorcheck = window.doorCheck(2,!activeFlute() && !canUse('lantern'),false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : ''],'boss');
+					var doorcheck = window.doorCheck(2,!activeFlute() && !canUse('lantern'),false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.HeraBoss();
 				},
 				can_get_chest: function() {
 					if(!(items.glove || activeFlute()) || !items.moonpearl || !items.hammer || !(items.hookshot || items.glove === 2)) return 'unavailable';
-					var doorcheck = window.doorCheck(2,!activeFlute() && !canUse('lantern'),false,false,['firesource'],'item');
+					var doorcheck = window.doorCheck(2,!activeFlute() && !canUse('lantern'),false,false,['firesource','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.HeraChests();
@@ -1116,14 +1116,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if(!canReachPyramid()) return 'unavailable';
-					var doorcheck = window.doorCheck(3,false,true,true,['boots','hammer','bow'],'boss');
+					var doorcheck = window.doorCheck(3,false,true,true,['boots','bomb','hammer','bow'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.PoDBoss();
 				},
 				can_get_chest: function() {
 					if (!canReachPyramid()) return 'unavailable';
-					var doorcheck = window.doorCheck(3,false,true,true,['boots','hammer','bow'],'item');
+					var doorcheck = window.doorCheck(3,false,true,true,['boots','bomb','hammer','bow'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.PoDChests();
@@ -1133,14 +1133,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!items.moonpearl || !canReachLightWorldBunny()) return 'unavailable';
-					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer'],'boss');
+					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.SPBoss();
 				},
 				can_get_chest: function() {
 					if (!items.moonpearl || !canReachLightWorldBunny()) return 'unavailable';
-					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer'],'item');
+					var doorcheck = window.doorCheck(4,false,false,false,['flippers','mirror','hookshot','hammer','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.SPChests();
@@ -1149,13 +1149,13 @@
 				caption: 'Skull Woods',
 				is_beaten: false,
 				is_beatable: function() {
-					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless','mirrorskull'],'boss');
+					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless','mirrorskull','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.SWBoss();
 				},
 				can_get_chest: function() {
-					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless','mirrorskull'],'item');
+					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless','mirrorskull','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.SWChests();
@@ -1164,13 +1164,13 @@
 				caption: 'Thieves\' Town',
 				is_beaten: false,
 				is_beatable: function() {
-					var doorcheck = window.doorCheck(6,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '','glove'],'boss');
+					var doorcheck = window.doorCheck(6,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '','glove', 'bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.TTBoss();
 				},
 				can_get_chest: function() {
-					var doorcheck = window.doorCheck(6,false,false,false,['hammer','glove'],'item');
+					var doorcheck = window.doorCheck(6,false,false,false,['hammer','glove','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.TTChests();
@@ -1180,14 +1180,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!items.flippers) return 'unavailable';
-					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria'],'boss');
+					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.IPBoss();
 				},
 				can_get_chest: function() {
 					if (!items.flippers) return 'unavailable';
-					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria'],'item');
+					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.IPChests();
@@ -1197,7 +1197,7 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if ((!activeFlute() && !(items.mirror && canReachLightWorldBunny())) || medallionCheck(0) === 'unavailable') return 'unavailable';
-					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria'],'boss');
+					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria','bomb'],'boss');
 					if(doorcheck)
 					{
 						if(doorcheck === 'unavailable')
@@ -1213,7 +1213,7 @@
 				},
 				can_get_chest: function() {
 					if ((!activeFlute() && !(items.mirror && canReachLightWorldBunny())) || medallionCheck(0) === 'unavailable') return 'unavailable';
-					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria'],'item');
+					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria','bomb'],'item');
 					if(doorcheck)
 					{
 						if(doorcheck === 'unavailable')
@@ -1234,7 +1234,7 @@
 					if(flags.doorshuffle != 'N')
 					{
 						if(medallionCheck(1) === 'unavailable' && (!items.mirror || ((!items.hookshot || !items.moonpearl) && items.glove < 2))) return 'unavailable';
-						var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
+						var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod','bomb',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
 						if(doorcheck === 'unavailable')
 							return 'unavailable';
 						if(medallionCheck(1) === 'possible' && doorcheck === 'available')
@@ -1258,7 +1258,7 @@
 					if(flags.doorshuffle != 'N')
 					{
 						if(medallionCheck(1) === 'unavailable' && (!items.mirror || ((!items.hookshot || !items.moonpearl) && items.glove < 2))) return 'unavailable';
-						var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod','laserbridge'],'item');
+						var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod','bomb','laserbridge'],'item');
 						if(doorcheck === 'unavailable')
 							return 'unavailable';
 						if(medallionCheck(1) === 'possible' && doorcheck === 'available')
@@ -1284,7 +1284,7 @@
 				is_beatable: function() {
 					if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || !canReachLightWorld() || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck()))) return 'unavailable';
 					if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!canUse('lantern') && !canUse('firerod'))) return 'unavailable';
-					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (canUse('lantern') || canUse('firerod'))) return 'available';
+					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (canUse('lantern') || canUse('firerod') && items.bomb)) return 'available';
 					return window.GTBoss();			
 				},
 				can_get_chest: function() {
@@ -1296,12 +1296,12 @@
 							return doorcheck;
 						if(doorcheck === 'darkpossible')
 						{
-							doorcheck = window.doorCheck(10,true,false,false,['hammer','firerod','hookshot','boomerang','somaria','wizzrobe','boots','bow',flags.bossshuffle === 'N' ? '' : 'icerod'],'item');
+							doorcheck = window.doorCheck(10,true,false,false,['hammer','firerod','hookshot','boomerang','somaria','wizzrobe','boots','bow','bomb',flags.bossshuffle === 'N' ? '' : 'icerod'],'item');
 							if(doorcheck === 'darkavailable')
 								return 'darkpossible';
 							return doorcheck;
 						}
-						return window.doorCheck(10,doorcheck.startsWith('dark'),false,false,['hammer','firerod','hookshot','boomerang','somaria','wizzrobe','boots','bow',flags.bossshuffle === 'N' ? '' : 'icerod'],'item');
+						return window.doorCheck(10,doorcheck.startsWith('dark'),false,false,['hammer','firerod','hookshot','boomerang','somaria','wizzrobe','boots','bow','bomb',flags.bossshuffle === 'N' ? '' : 'icerod'],'item');
 					}
 					return window.GTChests();
 				}
@@ -1314,7 +1314,7 @@
 				can_get_chest: function() {
 					if(!canReachLightWorld())
 						return 'unavailable';
-					return window.doorCheck(11,false,false,true,['glove'],'item');
+					return window.doorCheck(11,false,false,true,['glove','bomb'],'item');
 				}
 			}, { // [12]
 				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
@@ -1325,7 +1325,7 @@
 				can_get_chest: function() {
 					if(!items.glove && !activeFlute())
 						return 'unavailable';
-					return window.doorCheck(12,!items.lantern && !activeFlute(),true,true,['swordorswordless'],'item');
+					return window.doorCheck(12,!items.lantern && !activeFlute(),true,true,['swordorswordless','bomb'],'item');
 				}
 			}];
 
@@ -1389,12 +1389,14 @@
 				caption: 'Chicken House {bomb}',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorld() ? 'available' : 'unavailable';
+					return canReachLightWorld() && items.bomb ? 'available' : 'unavailable';
 				}
 			}, { // [7]
 				caption: 'Bombable Hut {bomb}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.bomb ? 'available' : 'unavailable';
+				}
 			}, { // [8]
 				caption: 'C House',
 				is_opened: false,
@@ -1403,7 +1405,7 @@
 				caption: 'Aginah\'s Cave {bomb}',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorld() ? 'available' : 'unavailable';
+					return canReachLightWorld() && items.bomb ? 'available' : 'unavailable';
 				}
 			}, { // [10]
 				caption: 'Mire Shed (2)',
@@ -1423,7 +1425,7 @@
 				caption: 'Sahasrahla\'s Hut (3) {bomb}/{boots}',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : 'unavailable') : 'unavailable';
+					return canReachLightWorldBunny() ? (items.moonpearl && items.bomb ? 'available' : 'unavailable') : 'unavailable';
 				}
 			}, { // [13]
 				caption: 'Byrna Spike Cave',
@@ -1437,25 +1439,27 @@
 				caption: 'Kakariko Well (4 + {bomb})',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : 'possible') : 'unavailable';
+					return canReachLightWorldBunny() ? (items.moonpearl ? (items.bomb ? 'available' : 'partialavailable') : 'possible') : 'unavailable';
 				}
 			}, { // [15]
 				caption: 'Thieve\'s Hut (4 + {bomb})',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : (items.mirror ? 'possible' : 'unavailable')) : 'unavailable';
+					return canReachLightWorldBunny() ? (items.moonpearl ? (items.bomb ? 'available' : 'partialavailable') : items.mirror ? 'possible' : 'unavailable') : 'unavailable';
 				}
 			}, { // [16]
 				caption: 'Hype Cave! {bomb} (NPC + 4 {bomb})',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.bomb ? 'available' : 'unavailable';
+				}
 			}, { // [17]
 				caption: 'Paradox Cave (5 + 2 {bomb})',
 				is_opened: false,
 				is_available: function() {
-					return (activeFlute() || items.glove) && ((items.hookshot && items.moonpearl) || items.glove === 2) ?
-						(items.moonpearl ? (items.lantern || activeFlute() ? 'available' : 'darkavailable') : (items.sword >= 2 ? 'possible' : 'unavailable')) :
-						'unavailable';
+					return ((activeFlute() || items.glove) && items.moonpearl && (items.hookshot || items.glove === 2) &&
+						items.bomb || items.bow || items.boomerang || canUse('firerod') || canUse('icerod') || canUse('somaria') ?
+						(items.lantern || activeFlute() ? (items.bomb ? 'available' : 'partialavailable') : 'darkavailable') : 'unavailable');
 				}
 			}, { // [18]
 				caption: 'West of Sanctuary {boots}',
@@ -1467,13 +1471,13 @@
 				caption: 'Minimoldorm Cave (NPC + 4) {bomb}',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorld() ? 'available' : 'unavailable';
+					return canReachLightWorld() && items.bomb ? 'available' : 'unavailable';
 				}
 			}, { // [20]
 				caption: 'Ice Rod Cave {bomb}',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorld() ? 'available' : 'unavailable';
+					return canReachLightWorld() && items.bomb ? 'available' : 'unavailable';
 				}
 			}, { // [21]
 				caption: 'Hookshot Cave (bottom chest) {hookshot}/{boots}',
@@ -1653,7 +1657,7 @@
 				caption: 'Race Minigame {bomb}/{boots}',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : 'possible') : 'unavailable';
+					return canReachLightWorldBunny() && (items.bomb || items.boots) ? (items.moonpearl ? 'available' : 'possible') : 'unavailable';
 				}
 			}, { // [48]
 				caption: 'Desert West Ledge {book}',
@@ -1720,7 +1724,7 @@
 					var doorcheck = window.doorCheck(11,false,false,true,['glove'],'item');
 					if(doorcheck)
 						return items.moonpearl ? doorcheck : 'unavailable';
-					return canReachLightWorldBunny() ? (items.glove && items.moonpearl ? 'available' : (items.mirror ? 'possible' : 'unavailable')) : 'unavailable';
+					return canReachLightWorldBunny() && (items.bomb || items.boots) ? (items.glove && items.moonpearl ? 'available' : (items.mirror ? 'possible' : 'unavailable')) : 'unavailable';
 				}
 			}, { // [56]
 				caption: "Castle Secret Entrance (Uncle + 1)",
@@ -1840,13 +1844,13 @@
 				caption: 'Eastern Palace',
 				is_beaten: false,
 				is_beatable: function() {
-					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow'],'boss');
+					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.EPBoss();
 				},
 				can_get_chest: function() {
-					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow'],'item');
+					var doorcheck = window.doorCheck(0,false,true,true,['hookshot','bow','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.EPChests();
@@ -1857,14 +1861,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!items.book && !(items.flute && items.glove === 2 && items.mirror)) return 'unavailable';
-					var doorcheck = window.doorCheck(1,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','glove','firesource','mirrordesert'],'boss');
+					var doorcheck = window.doorCheck(1,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','glove','firesource','mirrordesert','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.DPBoss();
 				},
 				can_get_chest: function() {
 					if (!items.book && !(items.flute && items.glove === 2 && items.mirror)) return 'unavailable';
-					var doorcheck = window.doorCheck(1,false,false,false,['boots','glove','firesource','mirrordesert'],'item');
+					var doorcheck = window.doorCheck(1,false,false,false,['boots','glove','firesource','mirrordesert','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.DPChests();
@@ -1875,7 +1879,7 @@
 				is_beatable: function() {
 					if (!items.flute && !items.glove) return 'unavailable';
 					if (!(items.mirror && canHitSwitch()) && !(items.hookshot && items.hammer)) return 'unavailable';
-					var doorcheck = window.doorCheck(2,!items.flute && !canUse('lantern'),false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : ''],'boss');
+					var doorcheck = window.doorCheck(2,!items.flute && !canUse('lantern'),false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '','bomb'],'boss');
 					if(doorcheck)
 					{
 					//	if(!items.flute && !items.lantern && (doorcheck === 'available' || doorcheck === 'possible'))
@@ -1887,7 +1891,7 @@
 				can_get_chest: function() {
 					if (!items.flute && !items.glove) return 'unavailable';
 					if (!(items.mirror && canHitSwitch()) && !(items.hookshot && items.hammer)) return 'unavailable';
-					var doorcheck = window.doorCheck(2,!items.flute && !items.lantern,false,false,['firesource'],'item');
+					var doorcheck = window.doorCheck(2,!items.flute && !items.lantern,false,false,['firesource','bomb'],'item');
 					if(doorcheck)
 					{
 					//	if(!items.flute && !items.lantern && (doorcheck === 'available' || doorcheck === 'possible'))
@@ -1901,8 +1905,8 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!canReachDarkWorld()) return 'unavailable';
-					if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers)) return 'unavailable';
-					var doorcheck = window.doorCheck(3,false,true,true,['boots','hammer','bow'],'boss');
+					if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers) && !(items.bomb || items.hammer)) return 'unavailable';
+					var doorcheck = window.doorCheck(3,false,true,true,['boots','hammer','bow','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.PoDBoss();
@@ -1910,7 +1914,7 @@
 				can_get_chest: function() {
 					if (!canReachDarkWorld()) return 'unavailable';
 					if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers)) return 'unavailable';
-					var doorcheck = window.doorCheck(3,false,true,true,['boots','hammer','bow'],'item');
+					var doorcheck = window.doorCheck(3,false,true,true,['boots','hammer','bow','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.PoDChests();
@@ -1941,14 +1945,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!can_reach_outcast() || !canReachDarkWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless'],'boss');
+					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.SWBoss();
 				},
 				can_get_chest: function() {
 					if (!can_reach_outcast() || !canReachDarkWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless'],'item');
+					var doorcheck = window.doorCheck(5,false,false,false,['firerod','swordorswordless','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.SWChests();
@@ -1957,7 +1961,7 @@
 				caption: 'Thieves\' Town',
 				is_beaten: false,
 				is_beatable: function() {
-					if (!can_reach_outcast() || !canReachDarkWorld()) return 'unavailable';
+					if (!can_reach_outcast() || !canReachDarkWorld() || !items.bomb) return 'unavailable';
 					var doorcheck = window.doorCheck(6,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '','glove'],'boss');
 					if(doorcheck)
 						return doorcheck;
@@ -1965,7 +1969,7 @@
 				},
 				can_get_chest: function() {
 					if (!can_reach_outcast() || !canReachDarkWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(6,false,false,false,['hammer','glove'],'item');
+					var doorcheck = window.doorCheck(6,false,false,false,['hammer','glove','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.TTChests();
@@ -1975,14 +1979,14 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!items.moonpearl || !items.flippers || items.glove !== 2 || !canReachDarkWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria'],'boss');
+					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'boss');
 					if(doorcheck)
 						return doorcheck;
 					return window.IPBoss();
 				},
 				can_get_chest: function() {
 					if (!items.moonpearl || !items.flippers || items.glove !== 2 || !canReachDarkWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria'],'item');
+					var doorcheck = window.doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.IPChests();
@@ -1997,7 +2001,7 @@
 					if (!items.moonpearl || !items.flute || items.glove !== 2 || !canReachDarkWorld() || medallionCheck(0) === 'unavailable') return 'unavailable';
 					//var state = medallionCheck(0);
 					//if (state) return state;
-					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria'],'boss');
+					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria','bomb'],'boss');
 					if(doorcheck)
 					{
 						if(doorcheck === 'unavailable')
@@ -2015,7 +2019,7 @@
 					if (!items.moonpearl || !items.flute || items.glove !== 2 || !canReachDarkWorld() || medallionCheck(0) === 'unavailable') return 'unavailable';
 					//var state = medallionCheck(0);
 					//if (state) return state;
-					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria'],'item');
+					var doorcheck = window.doorCheck(8,false,true,false,['hookboots','hookshot','wizzrobe','firesource','somaria','bomb'],'item');
 					if(doorcheck)
 					{
 						if(doorcheck === 'unavailable')
@@ -2037,7 +2041,7 @@
 					if (medallionCheck(1) === 'unavailable') return 'unavailable';
 					//var state = medallionCheck(1);
 					//if (state) return state;
-					var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
+					var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod','bomb',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
 					if(doorcheck)
 					{
 						if(doorcheck === 'unavailable')
@@ -2057,7 +2061,7 @@
 					if (medallionCheck(1) === 'unavailable') return 'unavailable';
 					//var state = medallionCheck(1);
 					//if (state) return state;				
-					var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod','laserbridge'],'item');
+					var doorcheck = window.doorCheck(9,!items.flute && !items.lantern,true,false,['somaria','firerod','bomb','laserbridge'],'item');
 					if(doorcheck)
 					{
 						if(doorcheck === 'unavailable')
@@ -2077,12 +2081,12 @@
 					if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || !canReachDarkWorld() || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck()))) return 'unavailable';
 					if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!canUse('lantern') && !canUse('firerod'))) return 'unavailable';
 					//Fast Ganon
-					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (canUse('lantern') || canUse('firerod'))) return 'available';
+					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (canUse('lantern') || canUse('firerod') && items.bomb)) return 'available';
 					return window.GTBoss();
 				},
 				can_get_chest: function() {
 					if ((crystalCheck() < 7 && crystalCheck() < flags.opentowercount) || items.glove < 2 || (!items.hammer && !items.hookshot) || !canReachDarkWorld()) return 'unavailable';
-					var doorcheck = window.doorCheck(10,!items.flute && !canUse('lantern'),false,false,['hammer','firerod','hookshot','boomerang','somaria','wizzrobe','boots','bow',flags.bossshuffle === 'N' ? '' : 'icerod'],'item');
+					var doorcheck = window.doorCheck(10,!items.flute && !canUse('lantern'),false,false,['hammer','firerod','hookshot','boomerang','somaria','wizzrobe','boots','bow','bomb',flags.bossshuffle === 'N' ? '' : 'icerod'],'item');
 					if(doorcheck)
 						return doorcheck;
 					return window.GTChests();
@@ -2094,7 +2098,7 @@
 					return items.chest11 ?window.dungeons[11].can_get_chest() :'opened';
 				},
 				can_get_chest: function() {
-					return window.doorCheck(11,false,false,flags.gametype != 'S',['glove'],'item');
+					return window.doorCheck(11,false,false,flags.gametype != 'S',['glove','bomb'],'item');
 				}
 			}, { // [12]
 				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
@@ -2106,7 +2110,7 @@
 					if(items.sword < 2 && (flags.swordmode != 'S' || !items.hammer) && !canUse('cape') && !items.agahnim)
 						return 'unavailable';
 					if(items.mirror && (items.agahnim || (items.glove && items.hammer && items.moonpearl) || (items.glove === 2 && items.moonpearl && items.flippers)))
-						return window.doorCheck(12,false,true,true,['swordorswordless'],'item');
+						return window.doorCheck(12,false,true,true,['swordorswordless','bomb'],'item');
 					return 'possible';
 				}
 			}];
@@ -2267,7 +2271,7 @@
 				is_opened: false,
 				is_available: function() {
 					return (items.glove || items.flute) && (items.hookshot || items.mirror && items.hammer) &&
-						(items.bomb || items.sword > 1 || items.bow || items.boomerang || canUse('firerod') || canUse('icerod') || canUse('somaria')) ?
+						(items.bomb || items.bow || items.boomerang || canUse('firerod') || canUse('icerod') || canUse('somaria')) ?
 						items.lantern || items.flute ? items.bomb ? 'available' : 'partialavailable' : 'darkavailable' : 'unavailable';
 				}
 			}, { // [18]
