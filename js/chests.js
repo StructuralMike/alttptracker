@@ -44,6 +44,11 @@
 	function can_reach_outcast() {
 		return (items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim && items.hookshot && (items.hammer || items.glove || items.flippers)));
 	}
+
+	function can_reach_darkworld_south() {
+		return items.moonpearl && (items.glove === 2 || (items.glove && items.hammer) || (items.agahnim && (items.hammer || (items.hookshot && (items.glove || items.flippers)))));
+
+	}
 	
 	function can_reach_outcast_glitched() {
 		return (flags.glitches != 'N' && (items.boots || items.glove || items.flute) && ((items.moonpearl && items.boots) || items.mirror));
@@ -2473,7 +2478,7 @@
 				caption: 'Race Minigame {bomb}/{boots}',
 				is_opened: false,
 				is_available: function() {
-					return items.boots || items.bomb ? 'available' : 'information';
+					return (items.boots || items.bomb) || (can_reach_darkworld_south() && items.mirror) ? 'available' : 'information';
 				}
 			}, { // [48]
 				caption: 'Desert West Ledge {book}/{mirror}',
