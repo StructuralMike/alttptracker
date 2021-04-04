@@ -629,7 +629,7 @@
 		var chests = ['U','U','U','U','U','U'];
 
 		//Small Key
-		if (flags.wildbigkeys && (flags.wildkeys || flags.gametype === 'R')) {
+		if (flags.wildbigkeys || (flags.wildkeys || flags.gametype === 'R')) {
 			chests[0] = (isDark ? 'DA' : 'A');
 		} else {
 			chests[0] = (canUse('lantern') || canUse('firerod')) ? 'K' : (isDark ? 'DP' : 'P'); //Setting this as the small key as it is always available with a fire source
@@ -644,7 +644,7 @@
 				chests[2] = 'U';
 			} else {
 				if (flags.wildkeys) {
-					chests[2] = (items.smallkey2 === 0 ? 'U' : (isDark ? 'DA' : 'A'));
+					chests[2] = (items.smallkey2 === 0 || (!canUse('lantern') && !canUse('firerod'))) ? 'U' : (isDark ? 'DA' : 'A');
 				} else {
 					//This needs to be only possible, because the small key could be locked upstairs in wild big keys
 					chests[2] = (isDark ? 'DP' : 'P');
@@ -652,20 +652,22 @@
 			}
 		} else {
 			if (canUse('lantern') || canUse('firerod')) {
-				chests[2] = 'K';
-			} else {
-				chests[2] = 'U';
+				if (flags.wildkeys) {
+					chests[2] = items.smallkey2 === 1 ? (isDark ? 'DA' : 'A') : 'U';
+				} else {
+					chests[2] = 'K';
+				}
 			}
 		}
 
 		//Compass Chest
 		if (flags.wildbigkeys) {
 			chests[3] = (items.bigkey2 ? (isDark ? 'DA' : 'A') : 'U');
-		} else if (flags.wildkeys) {
-			if (items.smallkey2 === 1 && (canUse('lantern') || canUse('firerod'))) {
-				chests[3] = (isDark ? 'DA' : 'A');
+		} else if (items.smallkey2 === 1 || flags.gametype === 'R') {
+			if (canUse('lantern') || canUse('firerod')) {
+				chests[3] =  isDark ? 'DA' : 'A';
 			} else {
-				chests[3] = (isDark ? 'DP' : 'P');
+				chests[3] = isDark ? 'DP' : 'P';
 			}
 		} else {
 			if (canUse('lantern') || canUse('firerod')) {
@@ -679,10 +681,12 @@
 		if (flags.wildbigkeys) {
 			chests[4] = (items.bigkey2 ? (isDark ? 'DA' : 'A') : 'U');
 		} else if (flags.wildkeys || flags.gametype === 'R') {
-			if ((items.smallkey2 === 1 || flags.gametype === 'R') && (canUse('lantern') || canUse('firerod'))) {
-				chests[4] = (isDark ? 'DA' : 'A');
-			} else {
-				chests[4] = (isDark ? 'DP' : 'P');
+			if ((items.smallkey2 === 1 || flags.gametype === 'R')) {
+				if (canUse('lantern') || canUse('firerod')) {
+					chests[4] =  isDark ? 'DA' : 'A';
+				} else {
+					chests[4] = isDark ? 'DP' : 'P';
+				}
 			}
 		} else {
 			if (canUse('lantern') || canUse('firerod')) {
